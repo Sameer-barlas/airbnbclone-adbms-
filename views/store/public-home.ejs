@@ -1,60 +1,196 @@
 <%- include('../partials/head') %>
 
-<body class="bg-slate-50 min-h-screen text-slate-900">
+<body class="min-h-screen bg-slate-50 text-slate-950">
 <%- include('../partials/navbar') %>
 
-<main class="max-w-7xl mx-auto px-6 py-10">
-    <section class="mb-10">
-        <div class="rounded-[2rem] bg-white border border-slate-200 shadow-sm px-8 py-10 md:px-12">
-            <p class="text-xs font-black uppercase tracking-[0.3em] text-rose-500 mb-3">StayEase Homes</p>
-            <h1 class="text-4xl md:text-6xl font-black tracking-tight max-w-3xl">Explore beautiful stays before you sign in.</h1>
-            <p class="text-slate-600 mt-4 max-w-2xl">Browse available homes in a clean read-only view. Sign in as a guest when you are ready to book or add favourites.</p>
+<main>
+    <% const safeHomes = registeredHomes || []; %>
+    <% const cityNames = [...new Set(safeHomes.map(home => `${home.city_name}, ${home.country}`).filter(Boolean))]; %>
+    <% const reviewCount = safeHomes.reduce((sum, home) => sum + Number(home.total_reviews || 0), 0); %>
+
+    <section class="relative overflow-hidden bg-gradient-to-br from-rose-50 via-white to-sky-50">
+        <div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/80 to-transparent"></div>
+        <div class="mx-auto grid min-h-[calc(100vh-88px)] max-w-7xl grid-cols-1 items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
+            <div class="relative z-10">
+                <span class="inline-flex rounded-full border border-rose-200 bg-white/80 px-4 py-2 text-xs font-black uppercase tracking-[0.28em] text-rose-500 shadow-sm">
+                    StayEase Homes
+                </span>
+                <h1 class="mt-6 max-w-4xl text-5xl font-black leading-[0.95] tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
+                    Premium stays for your next escape.
+                </h1>
+                <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+                    Discover polished homes, trusted hosts, city stays, family villas, and weekend retreats in one clean Airbnb-style experience.
+                </p>
+                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <a href="#featured" class="inline-flex justify-center rounded-2xl bg-rose-500 px-7 py-4 font-black text-white shadow-xl shadow-rose-200 transition hover:-translate-y-1 hover:bg-rose-600">
+                        Explore Homes
+                    </a>
+                    <a href="/signup" class="inline-flex justify-center rounded-2xl border border-slate-200 bg-white px-7 py-4 font-black text-slate-950 shadow-sm transition hover:-translate-y-1 hover:border-rose-200 hover:text-rose-600">
+                        Become a Host
+                    </a>
+                </div>
+                <div class="mt-10 grid max-w-2xl grid-cols-3 gap-3">
+                    <div class="rounded-3xl border border-white bg-white/80 p-4 shadow-sm">
+                        <p class="text-3xl font-black"><%= safeHomes.length %>+</p>
+                        <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Homes</p>
+                    </div>
+                    <div class="rounded-3xl border border-white bg-white/80 p-4 shadow-sm">
+                        <p class="text-3xl font-black"><%= cityNames.length %>+</p>
+                        <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Cities</p>
+                    </div>
+                    <div class="rounded-3xl border border-white bg-white/80 p-4 shadow-sm">
+                        <p class="text-3xl font-black"><%= reviewCount %>+</p>
+                        <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Reviews</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative">
+                <div class="absolute -left-6 top-10 h-40 w-40 rounded-full bg-rose-200/50 blur-3xl"></div>
+                <div class="absolute -right-8 bottom-6 h-48 w-48 rounded-full bg-sky-200/60 blur-3xl"></div>
+                <div class="relative rounded-[2.2rem] border border-white bg-white/70 p-4 shadow-2xl shadow-slate-200/70 backdrop-blur">
+                    <% const heroHome = safeHomes[0]; %>
+                    <div class="relative h-[460px] overflow-hidden rounded-[1.7rem] bg-gradient-to-br from-rose-100 via-amber-50 to-sky-100">
+                        <% if (heroHome && heroHome.imageUrl) { %>
+                            <img src="<%= heroHome.imageUrl %>" alt="<%= heroHome.title %>" class="h-full w-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/10 to-transparent"></div>
+                        <% } else { %>
+                            <div class="flex h-full items-center justify-center px-8 text-center">
+                                <div>
+                                    <p class="text-xs font-black uppercase tracking-[0.3em] text-rose-500">Featured Stay</p>
+                                    <h2 class="mt-3 text-4xl font-black text-slate-950">Beautiful homes, curated for comfort.</h2>
+                                </div>
+                            </div>
+                        <% } %>
+                        <% if (heroHome) { %>
+                            <div class="absolute inset-x-5 bottom-5 rounded-3xl bg-white/90 p-5 shadow-xl backdrop-blur">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div>
+                                        <p class="text-xs font-black uppercase tracking-widest text-rose-500"><%= heroHome.property_type %></p>
+                                        <h2 class="mt-1 text-2xl font-black"><%= heroHome.title %></h2>
+                                        <p class="mt-1 text-sm font-bold text-slate-500"><%= heroHome.city_name %>, <%= heroHome.country %></p>
+                                    </div>
+                                    <div class="rounded-2xl bg-slate-950 px-4 py-3 text-right text-white">
+                                        <p class="text-xs font-bold text-white/60">from</p>
+                                        <p class="font-black">PKR <%= heroHome.price_per_night %></p>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <% if (errorMessage) { %>
-        <div class="mb-8 rounded-2xl border border-rose-100 bg-rose-50 px-5 py-4 text-rose-700 font-semibold"><%= errorMessage %></div>
-    <% } %>
-
-    <div class="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        <% if (!registeredHomes || registeredHomes.length === 0) { %>
-            <div class="col-span-full bg-white border border-dashed border-slate-300 rounded-3xl p-12 text-center">
-                <h2 class="text-2xl font-black">No homes available</h2>
-                <p class="text-slate-500 mt-2">Once hosts add homes, they will appear here.</p>
+    <section id="featured" class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+                <p class="text-xs font-black uppercase tracking-[0.28em] text-rose-500">Featured homes</p>
+                <h2 class="mt-2 text-3xl font-black sm:text-4xl">Explore standout stays</h2>
             </div>
+            <a href="/signup" class="font-black text-rose-500 transition hover:text-rose-600">Create account to book</a>
+        </div>
+
+        <% if (errorMessage) { %>
+            <div class="mb-8 rounded-2xl border border-rose-100 bg-rose-50 px-5 py-4 font-semibold text-rose-700"><%= errorMessage %></div>
         <% } %>
 
-        <% registeredHomes.forEach(home => { %>
-            <article class="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
-                <div class="relative h-56 bg-gradient-to-br from-rose-100 via-amber-50 to-sky-100 flex items-center justify-center overflow-hidden">
-                    <% if (home.imageUrl) { %>
-                        <img src="<%= home.imageUrl %>" alt="<%= home.title %>" class="absolute inset-0 w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-slate-950/25"></div>
-                    <% } %>
-                    <div class="relative text-center px-6">
-                        <p class="text-[10px] font-black uppercase tracking-[0.3em] <%= home.imageUrl ? 'text-white' : 'text-rose-500' %>"><%= home.property_type %></p>
-                        <h2 class="text-2xl font-black mt-2 <%= home.imageUrl ? 'text-white drop-shadow' : 'text-slate-900' %>"><%= home.title %></h2>
-                    </div>
+        <div class="flex snap-x gap-6 overflow-x-auto pb-5">
+            <% if (safeHomes.length === 0) { %>
+                <div class="min-w-full rounded-[2rem] border border-dashed border-slate-300 bg-white p-12 text-center">
+                    <h3 class="text-2xl font-black">No homes available</h3>
+                    <p class="mt-2 text-slate-500">Once hosts add homes, they will appear here.</p>
                 </div>
+            <% } %>
 
-                <div class="p-6 space-y-4">
-                    <div>
-                        <p class="text-slate-500 text-sm font-semibold"><%= home.city_name %>, <%= home.country %></p>
-                        <p class="text-slate-900 font-black text-xl mt-1">PKR <%= home.price_per_night %> <span class="text-sm font-medium text-slate-500">/ night</span></p>
+            <% safeHomes.forEach(home => { %>
+                <article class="group min-w-[300px] snap-start overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-slate-200 md:min-w-[360px]">
+                    <div class="relative h-64 overflow-hidden bg-gradient-to-br from-rose-100 via-amber-50 to-sky-100">
+                        <% if (home.imageUrl) { %>
+                            <img src="<%= home.imageUrl %>" alt="<%= home.title %>" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/45 to-transparent"></div>
+                        <% } %>
+                        <span class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-rose-500 shadow-sm"><%= home.property_type %></span>
+                        <span class="absolute right-4 top-4 rounded-full bg-slate-950/90 px-3 py-1.5 text-xs font-black text-white"><%= home.avg_rating || '0.00' %> rating</span>
                     </div>
-                    <div class="flex flex-wrap gap-2 text-xs">
-                        <span class="px-3 py-1 rounded-full bg-slate-100 font-bold text-slate-600"><%= home.max_guests %> guests</span>
-                        <span class="px-3 py-1 rounded-full bg-slate-100 font-bold text-slate-600"><%= home.avg_rating || '0.00' %> rating</span>
-                        <span class="px-3 py-1 rounded-full bg-slate-100 font-bold text-slate-600"><%= home.total_reviews %> reviews</span>
+                    <div class="p-6">
+                        <h3 class="line-clamp-1 text-xl font-black"><%= home.title %></h3>
+                        <p class="mt-1 text-sm font-bold text-slate-500"><%= home.city_name %>, <%= home.country %></p>
+                        <p class="mt-4 text-2xl font-black text-slate-950">PKR <%= home.price_per_night %> <span class="text-sm font-medium text-slate-400">/ night</span></p>
+                        <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                            <span class="rounded-full bg-slate-100 px-3 py-1 font-bold text-slate-600"><%= home.max_guests %> guests</span>
+                            <span class="rounded-full bg-slate-100 px-3 py-1 font-bold text-slate-600"><%= home.total_reviews %> reviews</span>
+                        </div>
+                        <% if (home.amenities) { %>
+                            <p class="mt-4 line-clamp-2 text-sm leading-6 text-slate-500"><%= home.amenities %></p>
+                        <% } %>
                     </div>
-                    <% if (home.amenities) { %>
-                        <p class="text-sm text-slate-500 line-clamp-2"><%= home.amenities %></p>
-                    <% } %>
+                </article>
+            <% }) %>
+        </div>
+    </section>
+
+    <section class="bg-white py-16">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6">
+            <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.28em] text-rose-500">Popular cities</p>
+                    <h2 class="mt-2 text-3xl font-black sm:text-4xl">Browse by destination</h2>
+                    <p class="mt-4 leading-7 text-slate-500">The cities below come directly from the homes currently available in your database.</p>
                 </div>
-            </article>
-        <% }) %>
-    </div>
+                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <% if (cityNames.length === 0) { %>
+                        <div class="rounded-3xl border border-dashed border-slate-200 p-6 text-slate-500">No cities yet.</div>
+                    <% } %>
+                    <% cityNames.slice(0, 6).forEach(city => { %>
+                        <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 transition hover:-translate-y-1 hover:border-rose-200 hover:bg-rose-50">
+                            <p class="text-lg font-black text-slate-950"><%= city %></p>
+                            <p class="mt-2 text-sm font-semibold text-slate-500">Premium stays available</p>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <div class="mb-8 text-center">
+            <p class="text-xs font-black uppercase tracking-[0.28em] text-rose-500">Why choose us</p>
+            <h2 class="mt-2 text-3xl font-black sm:text-4xl">Built for confident travel</h2>
+        </div>
+        <div class="grid gap-5 md:grid-cols-3">
+            <div class="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-xl font-black text-rose-500">1</div>
+                <h3 class="text-xl font-black">Curated homes</h3>
+                <p class="mt-3 leading-7 text-slate-500">A clean listing experience with ratings, amenities, guest limits, and pricing at a glance.</p>
+            </div>
+            <div class="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-xl font-black text-rose-500">2</div>
+                <h3 class="text-xl font-black">Trusted hosts</h3>
+                <p class="mt-3 leading-7 text-slate-500">Hosts can manage homes, images, availability, and bookings from a focused dashboard.</p>
+            </div>
+            <div class="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-xl font-black text-rose-500">3</div>
+                <h3 class="text-xl font-black">Simple booking</h3>
+                <p class="mt-3 leading-7 text-slate-500">Availability and booking rules stay protected by your existing backend and database flow.</p>
+            </div>
+        </div>
+    </section>
 </main>
+
+<footer class="border-t border-slate-200 bg-slate-950 text-white">
+    <div class="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 sm:px-6 md:flex-row md:items-center md:justify-between">
+        <div>
+            <p class="text-2xl font-black">StayEase</p>
+            <p class="mt-2 text-sm text-white/60">Premium Airbnb-style stays powered by your MVC project.</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="/login" class="rounded-full bg-white/10 px-5 py-3 text-sm font-black transition hover:bg-white hover:text-slate-950">Login</a>
+            <a href="/signup" class="rounded-full bg-rose-500 px-5 py-3 text-sm font-black transition hover:bg-rose-600">Signup</a>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>

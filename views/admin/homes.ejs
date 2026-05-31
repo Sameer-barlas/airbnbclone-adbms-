@@ -1,90 +1,109 @@
 <%- include('../partials/head') %>
 
-<body class="min-h-screen bg-slate-50 text-slate-900">
+<body class="min-h-screen bg-slate-50 text-slate-950">
 <%- include('../partials/navbar') %>
 
-<main class="max-w-7xl mx-auto px-6 py-10">
-    <div class="mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-        <div>
-            <p class="text-xs font-black uppercase tracking-[0.3em] text-rose-500">Host dashboard</p>
-            <h1 class="text-4xl font-black mt-2">Manage your homes</h1>
+<main class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+    <section class="mb-8 overflow-hidden rounded-[2rem] border border-white bg-gradient-to-br from-slate-950 via-slate-900 to-rose-950 p-6 text-white shadow-2xl shadow-slate-200 sm:p-8 lg:p-10">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+                <p class="text-xs font-black uppercase tracking-[0.3em] text-rose-300">Host dashboard</p>
+                <h1 class="mt-3 text-4xl font-black tracking-tight sm:text-5xl">Manage your homes</h1>
+                <p class="mt-3 max-w-2xl text-white/65">Track listings, revenue, bookings, and availability from one polished workspace.</p>
+            </div>
+            <a href="/host/add-home" class="inline-flex justify-center rounded-2xl bg-rose-500 px-6 py-4 font-black text-white shadow-xl shadow-rose-950/40 transition hover:-translate-y-1 hover:bg-rose-600">
+                Add Home
+            </a>
         </div>
-        <a href="/host/add-home" class="bg-rose-500 text-white px-6 py-3 rounded-2xl font-black hover:bg-rose-600 transition">Add Home</a>
-    </div>
+    </section>
 
     <% if (message) { %>
-        <div class="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-emerald-700 font-semibold"><%= message %></div>
+        <div class="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 font-semibold text-emerald-700"><%= message %></div>
     <% } %>
 
-    <section class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
-        <div class="bg-white rounded-3xl border border-slate-200 p-5">
-            <p class="text-xs font-black uppercase text-slate-400">Homes</p>
-            <p class="text-3xl font-black mt-2"><%= dashboard ? dashboard.total_properties : 0 %></p>
+    <section class="mb-10 grid grid-cols-2 gap-4 lg:grid-cols-5">
+        <div class="rounded-[1.7rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+            <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-50 font-black text-rose-500">H</div>
+            <p class="text-xs font-black uppercase tracking-widest text-slate-400">Homes</p>
+            <p class="mt-2 text-3xl font-black"><%= dashboard ? dashboard.total_properties : 0 %></p>
         </div>
-        <div class="bg-white rounded-3xl border border-slate-200 p-5">
-            <p class="text-xs font-black uppercase text-slate-400">Bookings</p>
-            <p class="text-3xl font-black mt-2"><%= dashboard ? dashboard.total_bookings : 0 %></p>
+        <div class="rounded-[1.7rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+            <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-50 font-black text-sky-600">B</div>
+            <p class="text-xs font-black uppercase tracking-widest text-slate-400">Bookings</p>
+            <p class="mt-2 text-3xl font-black"><%= dashboard ? dashboard.total_bookings : 0 %></p>
         </div>
-        <div class="bg-white rounded-3xl border border-slate-200 p-5">
-            <p class="text-xs font-black uppercase text-slate-400">Revenue</p>
-            <p class="text-3xl font-black mt-2">PKR <%= dashboard ? dashboard.total_revenue : 0 %></p>
+        <div class="rounded-[1.7rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl lg:col-span-1">
+            <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 font-black text-emerald-600">R</div>
+            <p class="text-xs font-black uppercase tracking-widest text-slate-400">Revenue</p>
+            <p class="mt-2 text-2xl font-black">PKR <%= dashboard ? dashboard.total_revenue : 0 %></p>
         </div>
-        <div class="bg-white rounded-3xl border border-slate-200 p-5">
-            <p class="text-xs font-black uppercase text-slate-400">Rating</p>
-            <p class="text-3xl font-black mt-2"><%= dashboard && dashboard.avg_rating ? dashboard.avg_rating : '0.00' %></p>
+        <div class="rounded-[1.7rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+            <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 font-black text-amber-600">S</div>
+            <p class="text-xs font-black uppercase tracking-widest text-slate-400">Rating</p>
+            <p class="mt-2 text-3xl font-black"><%= dashboard && dashboard.avg_rating ? dashboard.avg_rating : '0.00' %></p>
         </div>
-        <div class="bg-white rounded-3xl border border-slate-200 p-5">
-            <p class="text-xs font-black uppercase text-slate-400">Reviews</p>
-            <p class="text-3xl font-black mt-2"><%= dashboard ? dashboard.total_reviews : 0 %></p>
+        <div class="rounded-[1.7rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+            <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-violet-50 font-black text-violet-600">V</div>
+            <p class="text-xs font-black uppercase tracking-widest text-slate-400">Reviews</p>
+            <p class="mt-2 text-3xl font-black"><%= dashboard ? dashboard.total_reviews : 0 %></p>
         </div>
     </section>
 
     <section class="mb-10">
-        <h2 class="text-2xl font-black mb-4">Your Listings</h2>
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div class="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <div>
+                <p class="text-xs font-black uppercase tracking-[0.25em] text-rose-500">Listings</p>
+                <h2 class="mt-1 text-3xl font-black">Your homes</h2>
+            </div>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             <% if (!registeredHomes || registeredHomes.length === 0) { %>
-                <div class="col-span-full bg-white rounded-3xl border border-dashed border-slate-300 p-10 text-center">
+                <div class="col-span-full rounded-[2rem] border border-dashed border-slate-300 bg-white p-12 text-center">
                     <h3 class="text-2xl font-black">No homes yet</h3>
-                    <p class="text-slate-500 mt-2">Add cities and amenities in MySQL, then create your first home.</p>
+                    <p class="mt-2 text-slate-500">Add cities and amenities in MySQL, then create your first home.</p>
                 </div>
             <% } %>
 
             <% registeredHomes.forEach(home => { %>
-                <article class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-                    <div class="relative h-40 bg-gradient-to-br from-rose-100 via-amber-50 to-sky-100 flex items-center justify-center text-center px-6 overflow-hidden">
+                <article class="group overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-slate-200">
+                    <div class="relative h-52 overflow-hidden bg-gradient-to-br from-rose-100 via-amber-50 to-sky-100">
                         <% if (home.imageUrl) { %>
-                            <img src="<%= home.imageUrl %>" alt="<%= home.title %>" class="absolute inset-0 w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-slate-950/25"></div>
+                            <img src="<%= home.imageUrl %>" alt="<%= home.title %>" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/50 to-transparent"></div>
                         <% } %>
-                        <h3 class="relative text-2xl font-black <%= home.imageUrl ? 'text-white drop-shadow' : '' %>"><%= home.title %></h3>
+                        <h3 class="absolute inset-x-5 bottom-5 text-2xl font-black <%= home.imageUrl ? 'text-white drop-shadow' : 'text-slate-950' %>"><%= home.title %></h3>
+                        <span class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-rose-500"><%= home.property_type %></span>
                     </div>
-                    <div class="p-6 space-y-4">
-                        <p class="font-bold text-slate-500"><%= home.city_name %>, <%= home.country %></p>
-                        <p class="text-2xl font-black text-rose-500">PKR <%= home.price_per_night %></p>
+                    <div class="space-y-4 p-6">
+                        <div>
+                            <p class="font-bold text-slate-500"><%= home.city_name %>, <%= home.country %></p>
+                            <p class="mt-1 text-2xl font-black text-rose-500">PKR <%= home.price_per_night %></p>
+                        </div>
                         <% if (home.active_booking_count > 0) { %>
-                            <p class="rounded-2xl bg-amber-50 text-amber-700 px-4 py-2 text-sm font-bold">
+                            <p class="rounded-2xl bg-amber-50 px-4 py-2 text-sm font-bold text-amber-700">
                                 <%= home.active_booking_count %> active booking(s). Delete is locked.
                             </p>
                         <% } %>
                         <div class="grid grid-cols-2 gap-3">
-                            <a href="/host/edit-home/<%= home.property_id %>?editing=true" class="text-center bg-slate-900 text-white py-3 rounded-2xl font-bold">Edit</a>
+                            <a href="/host/edit-home/<%= home.property_id %>?editing=true" class="rounded-2xl bg-slate-950 py-3 text-center font-black text-white transition hover:bg-slate-800">Edit</a>
                             <% if (home.active_booking_count > 0) { %>
-                                <button type="button" disabled class="w-full border border-slate-200 text-slate-400 py-3 rounded-2xl font-bold cursor-not-allowed">Delete</button>
+                                <button type="button" disabled class="w-full cursor-not-allowed rounded-2xl border border-slate-200 py-3 font-black text-slate-400">Delete</button>
                             <% } else { %>
                                 <form action="/host/delete-home" method="POST">
                                     <input type="hidden" name="id" value="<%= home.property_id %>">
-                                    <button class="w-full border border-rose-200 text-rose-600 py-3 rounded-2xl font-bold">Delete</button>
+                                    <button class="w-full rounded-2xl border border-rose-200 py-3 font-black text-rose-600 transition hover:bg-rose-50">Delete</button>
                                 </form>
                             <% } %>
                         </div>
-                        <form action="/host/availability" method="POST" class="grid grid-cols-[1fr_auto] gap-2">
+                        <form action="/host/availability" method="POST" class="grid grid-cols-[1fr_auto] gap-2 rounded-3xl bg-slate-50 p-3">
                             <input type="hidden" name="propertyId" value="<%= home.property_id %>">
-                            <input type="date" name="availableDate" required class="rounded-2xl border border-slate-200 px-3 py-2">
-                            <select name="isBlocked" class="rounded-2xl border border-slate-200 px-3 py-2">
+                            <input type="date" name="availableDate" required class="rounded-2xl border border-slate-200 bg-white px-3 py-2 font-semibold outline-none focus:border-rose-300 focus:ring-4 focus:ring-rose-100">
+                            <select name="isBlocked" class="rounded-2xl border border-slate-200 bg-white px-3 py-2 font-semibold outline-none focus:border-rose-300 focus:ring-4 focus:ring-rose-100">
                                 <option value="1">Block</option>
                                 <option value="0">Open</option>
                             </select>
-                            <button class="col-span-2 bg-rose-50 text-rose-600 py-2 rounded-2xl font-bold">Update Availability</button>
+                            <button class="col-span-2 rounded-2xl bg-rose-50 py-3 font-black text-rose-600 transition hover:bg-rose-100">Update Availability</button>
                         </form>
                     </div>
                 </article>
@@ -92,31 +111,39 @@
         </div>
     </section>
 
-    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="bg-white rounded-3xl border border-slate-200 p-6">
-            <h2 class="text-2xl font-black mb-4">Revenue Report</h2>
+    <section class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="mb-5 flex items-center justify-between gap-4">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-widest text-rose-500">Analytics</p>
+                    <h2 class="text-2xl font-black">Revenue Report</h2>
+                </div>
+            </div>
             <div class="space-y-3">
                 <% if (!revenueReport || revenueReport.length === 0) { %>
-                    <p class="text-slate-500">No revenue yet this year.</p>
+                    <p class="rounded-2xl bg-slate-50 p-5 text-slate-500">No revenue yet this year.</p>
                 <% } %>
                 <% revenueReport.forEach(row => { %>
-                    <div class="flex justify-between border-b border-slate-100 pb-3">
-                        <span class="font-bold"><%= row.month_name %></span>
-                        <span class="font-black">PKR <%= row.gross_revenue %></span>
+                    <div class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                        <span class="font-bold text-slate-600"><%= row.month_name %></span>
+                        <span class="font-black text-slate-950">PKR <%= row.gross_revenue %></span>
                     </div>
                 <% }) %>
             </div>
         </div>
-        <div class="bg-white rounded-3xl border border-slate-200 p-6">
-            <h2 class="text-2xl font-black mb-4">Recent Host Bookings</h2>
+        <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="mb-5">
+                <p class="text-xs font-black uppercase tracking-widest text-rose-500">Activity</p>
+                <h2 class="text-2xl font-black">Recent Host Bookings</h2>
+            </div>
             <div class="space-y-3">
                 <% if (!hostBookings || hostBookings.length === 0) { %>
-                    <p class="text-slate-500">No bookings yet.</p>
+                    <p class="rounded-2xl bg-slate-50 p-5 text-slate-500">No bookings yet.</p>
                 <% } %>
                 <% hostBookings.slice(0, 6).forEach(book => { %>
-                    <div class="border-b border-slate-100 pb-3">
+                    <div class="rounded-2xl bg-slate-50 px-4 py-3">
                         <p class="font-black"><%= book.property_title %></p>
-                        <p class="text-sm text-slate-500"><%= book.guest_name %> | <%= book.check_in %> to <%= book.check_out %> | <%= book.status %></p>
+                        <p class="mt-1 text-sm font-semibold text-slate-500"><%= book.guest_name %> | <%= book.check_in %> to <%= book.check_out %> | <%= book.status %></p>
                     </div>
                 <% }) %>
             </div>
