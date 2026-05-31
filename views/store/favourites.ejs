@@ -1,0 +1,49 @@
+<%- include('../partials/head') %>
+
+<body class="min-h-screen bg-slate-50 text-slate-900">
+<%- include('../partials/navbar') %>
+
+<main class="max-w-7xl mx-auto px-6 py-10">
+    <div class="mb-10">
+        <p class="text-xs font-black uppercase tracking-[0.3em] text-rose-500">Saved stays</p>
+        <h1 class="text-4xl font-black mt-2">Your Favourites</h1>
+        <p class="text-slate-500 mt-2">Homes you saved for later.</p>
+    </div>
+
+    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <% if (!favHomes || favHomes.length === 0) { %>
+            <div class="col-span-full bg-white rounded-3xl border border-dashed border-slate-300 p-12 text-center">
+                <h2 class="text-2xl font-black">No favourite homes yet</h2>
+                <p class="text-slate-500 mt-2">Browse listings and save the places you like.</p>
+                <a href="/" class="mt-6 inline-block bg-slate-900 text-white px-8 py-3 rounded-2xl font-bold">Start Exploring</a>
+            </div>
+        <% } %>
+
+        <% favHomes.forEach(home => { %>
+            <article class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="relative h-44 bg-gradient-to-br from-rose-100 via-amber-50 to-sky-100 flex items-center justify-center px-6 text-center overflow-hidden">
+                    <% if (home.imageUrl) { %>
+                        <img src="<%= home.imageUrl %>" alt="<%= home.title %>" class="absolute inset-0 w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-slate-950/25"></div>
+                    <% } %>
+                    <h2 class="relative text-2xl font-black <%= home.imageUrl ? 'text-white drop-shadow' : '' %>"><%= home.title %></h2>
+                </div>
+                <div class="p-6 space-y-4">
+                    <p class="font-bold text-slate-500"><%= home.city_name %>, <%= home.country %></p>
+                    <p class="text-2xl font-black text-rose-500">PKR <%= home.price_per_night %></p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="/homedetails/<%= home.property_id %>" class="text-center border border-slate-200 py-3 rounded-2xl font-bold">Details</a>
+                        <a href="/book/<%= home.property_id %>" class="text-center bg-rose-500 text-white py-3 rounded-2xl font-bold">Book</a>
+                    </div>
+                    <form action="/removefromfavourites" method="POST">
+                        <input type="hidden" name="propertyId" value="<%= home.property_id %>">
+                        <button class="w-full text-slate-400 hover:text-rose-500 text-xs font-black uppercase tracking-widest">Remove from Favourites</button>
+                    </form>
+                </div>
+            </article>
+        <% }) %>
+    </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<%- include('../partials/head') %>
+
+<body class="bg-slate-50 min-h-screen text-slate-900">
+<%- include('../partials/navbar') %>
+
+<main class="max-w-7xl mx-auto px-6 py-10">
+    <section class="mb-10">
+        <div class="rounded-[2rem] bg-white border border-slate-200 shadow-sm px-8 py-10 md:px-12">
+            <p class="text-xs font-black uppercase tracking-[0.3em] text-rose-500 mb-3">StayEase Homes</p>
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight max-w-3xl">Explore beautiful stays before you sign in.</h1>
+            <p class="text-slate-600 mt-4 max-w-2xl">Browse available homes in a clean read-only view. Sign in as a guest when you are ready to book or add favourites.</p>
+        </div>
+    </section>
+
+    <% if (errorMessage) { %>
+        <div class="mb-8 rounded-2xl border border-rose-100 bg-rose-50 px-5 py-4 text-rose-700 font-semibold"><%= errorMessage %></div>
+    <% } %>
+
+    <div class="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <% if (!registeredHomes || registeredHomes.length === 0) { %>
+            <div class="col-span-full bg-white border border-dashed border-slate-300 rounded-3xl p-12 text-center">
+                <h2 class="text-2xl font-black">No homes available</h2>
+                <p class="text-slate-500 mt-2">Once hosts add homes, they will appear here.</p>
+            </div>
+        <% } %>
+
+        <% registeredHomes.forEach(home => { %>
+            <article class="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
+                <div class="relative h-56 bg-gradient-to-br from-rose-100 via-amber-50 to-sky-100 flex items-center justify-center overflow-hidden">
+                    <% if (home.imageUrl) { %>
+                        <img src="<%= home.imageUrl %>" alt="<%= home.title %>" class="absolute inset-0 w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-slate-950/25"></div>
+                    <% } %>
+                    <div class="relative text-center px-6">
+                        <p class="text-[10px] font-black uppercase tracking-[0.3em] <%= home.imageUrl ? 'text-white' : 'text-rose-500' %>"><%= home.property_type %></p>
+                        <h2 class="text-2xl font-black mt-2 <%= home.imageUrl ? 'text-white drop-shadow' : 'text-slate-900' %>"><%= home.title %></h2>
+                    </div>
+                </div>
+
+                <div class="p-6 space-y-4">
+                    <div>
+                        <p class="text-slate-500 text-sm font-semibold"><%= home.city_name %>, <%= home.country %></p>
+                        <p class="text-slate-900 font-black text-xl mt-1">PKR <%= home.price_per_night %> <span class="text-sm font-medium text-slate-500">/ night</span></p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-3 py-1 rounded-full bg-slate-100 font-bold text-slate-600"><%= home.max_guests %> guests</span>
+                        <span class="px-3 py-1 rounded-full bg-slate-100 font-bold text-slate-600"><%= home.avg_rating || '0.00' %> rating</span>
+                        <span class="px-3 py-1 rounded-full bg-slate-100 font-bold text-slate-600"><%= home.total_reviews %> reviews</span>
+                    </div>
+                    <% if (home.amenities) { %>
+                        <p class="text-sm text-slate-500 line-clamp-2"><%= home.amenities %></p>
+                    <% } %>
+                </div>
+            </article>
+        <% }) %>
+    </div>
+</main>
+
+</body>
+</html>

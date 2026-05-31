@@ -1,0 +1,67 @@
+<%- include('../partials/head') %>
+
+<body class="min-h-screen bg-slate-50 text-slate-900">
+<%- include('../partials/navbar') %>
+
+<main class="max-w-6xl mx-auto px-6 py-10">
+    <div class="mb-10 text-center">
+        <p class="text-xs font-black uppercase tracking-[0.3em] text-rose-500">Booking history</p>
+        <h1 class="text-4xl font-black mt-2">Your Bookings</h1>
+    </div>
+
+    <% if (message) { %>
+        <div class="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-emerald-700 font-semibold"><%= message %></div>
+    <% } %>
+    <% if (errorMessage) { %>
+        <div class="mb-6 rounded-2xl border border-rose-100 bg-rose-50 px-5 py-4 text-rose-700 font-semibold"><%= errorMessage %></div>
+    <% } %>
+
+    <div class="space-y-6">
+        <% if (!bookings || bookings.length === 0) { %>
+            <div class="bg-white rounded-3xl border border-dashed border-slate-300 p-12 text-center">
+                <h2 class="text-2xl font-black">No bookings found</h2>
+                <a href="/" class="mt-6 inline-block bg-rose-500 text-white px-8 py-3 rounded-2xl font-bold">Find a Home</a>
+            </div>
+        <% } %>
+
+        <% bookings.forEach(book => { %>
+            <article class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                    <div>
+                        <span class="inline-block px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-slate-100 text-slate-600"><%= book.status %></span>
+                        <h2 class="text-2xl font-black mt-3"><%= book.property_title %></h2>
+                        <p class="text-slate-500 font-semibold"><%= book.city_name %>, <%= book.country %> hosted by <%= book.host_name %></p>
+                        <p class="mt-4 text-slate-700 font-bold"><%= book.check_in %> to <%= book.check_out %> | <%= book.nights %> nights | <%= book.num_guests %> guests</p>
+                        <p class="text-rose-500 text-2xl font-black mt-2">PKR <%= book.total_price %></p>
+                        <p class="text-sm text-slate-400">Payment: <%= book.payment_method || 'N/A' %> / <%= book.payment_status || 'N/A' %></p>
+                    </div>
+                    <div class="w-full md:w-64 space-y-3">
+                        <a href="/homedetails/<%= book.property_id %>" class="block text-center border border-slate-200 rounded-2xl py-3 font-bold">View Home</a>
+                        <% if (book.status === 'pending' || book.status === 'confirmed') { %>
+                            <form action="/bookings/cancel" method="POST">
+                                <input type="hidden" name="bookingId" value="<%= book.booking_id %>">
+                                <button class="w-full bg-slate-900 text-white rounded-2xl py-3 font-bold">Cancel Booking</button>
+                            </form>
+                        <% } %>
+                        <% if (book.status === 'completed') { %>
+                            <form action="/reviews" method="POST" class="space-y-2">
+                                <input type="hidden" name="bookingId" value="<%= book.booking_id %>">
+                                <select name="rating" class="w-full rounded-2xl border border-slate-200 px-3 py-2">
+                                    <% [5,4,3,2,1].forEach(rating => { %>
+                                        <option value="<%= rating %>"><%= rating %> stars</option>
+                                    <% }) %>
+                                </select>
+                                <textarea name="comment" rows="2" placeholder="Write a review" class="w-full rounded-2xl border border-slate-200 px-3 py-2"></textarea>
+                                <button class="w-full bg-rose-500 text-white rounded-2xl py-3 font-bold">Submit Review</button>
+                            </form>
+                        <% } %>
+                        <a href="/messages/<%= book.host_id %>" class="block text-center bg-rose-50 text-rose-600 rounded-2xl py-3 font-bold">Message Host</a>
+                    </div>
+                </div>
+            </article>
+        <% }) %>
+    </div>
+</main>
+
+</body>
+</html>

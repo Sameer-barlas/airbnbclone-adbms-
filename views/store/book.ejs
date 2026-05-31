@@ -1,0 +1,72 @@
+<%- include('../partials/head') %>
+
+<body class="min-h-screen bg-slate-50 text-slate-900">
+<%- include('../partials/navbar') %>
+
+<main class="max-w-3xl mx-auto px-6 py-10">
+    <% if (!currentHome) { %>
+        <div class="bg-white rounded-3xl p-10 border border-slate-200 text-center">
+            <h1 class="text-2xl font-black">Home not found</h1>
+            <a href="/" class="mt-6 inline-block bg-rose-500 text-white px-8 py-3 rounded-2xl font-bold">Back Home</a>
+        </div>
+    <% } else { %>
+        <div class="mb-8 text-center">
+            <p class="text-xs font-black uppercase tracking-[0.3em] text-rose-500">Secure booking</p>
+            <h1 class="text-4xl font-black mt-2">Reserve <%= currentHome.title %></h1>
+            <p class="text-slate-500 mt-2">Dates, guest count, payment, and availability are validated before confirmation.</p>
+        </div>
+
+        <% if (errorMessage) { %>
+            <div class="mb-6 rounded-2xl border border-rose-100 bg-rose-50 px-5 py-4 text-rose-700 font-semibold"><%= errorMessage %></div>
+        <% } %>
+
+        <div class="bg-white rounded-[2rem] border border-slate-200 shadow-xl p-8">
+            <div class="mb-6 bg-slate-50 border border-slate-100 rounded-3xl p-5">
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Signed in as</p>
+                <p class="font-black text-slate-900 mt-1"><%= currentUser.full_name %></p>
+                <p class="text-sm text-slate-500"><%= currentUser.email %></p>
+            </div>
+
+            <form action="/confirmbooking" method="POST" class="space-y-6">
+                <input type="hidden" name="propertyId" value="<%= currentHome.property_id %>">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Check In</label>
+                        <input type="date" name="checkIn" value="<%= oldInput.checkIn %>" required class="w-full rounded-2xl border border-slate-200 px-5 py-4 focus:outline-none focus:ring-4 focus:ring-rose-100">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Check Out</label>
+                        <input type="date" name="checkOut" value="<%= oldInput.checkOut %>" required class="w-full rounded-2xl border border-slate-200 px-5 py-4 focus:outline-none focus:ring-4 focus:ring-rose-100">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Guests</label>
+                        <input type="number" min="1" max="<%= currentHome.max_guests %>" name="numGuests" value="<%= oldInput.numGuests %>" required class="w-full rounded-2xl border border-slate-200 px-5 py-4 focus:outline-none focus:ring-4 focus:ring-rose-100">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Payment Method</label>
+                        <select name="paymentMethod" class="w-full rounded-2xl border border-slate-200 px-5 py-4 focus:outline-none focus:ring-4 focus:ring-rose-100">
+                            <% ['credit_card','debit_card','paypal','bank_transfer','cash'].forEach(method => { %>
+                                <option value="<%= method %>" <%= oldInput.paymentMethod === method ? 'selected' : '' %>><%= method.replace('_', ' ') %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-rose-50 border border-rose-100 rounded-3xl p-6 flex items-center justify-between gap-4">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-rose-400">Price per night</p>
+                        <p class="text-3xl font-black text-rose-600">PKR <%= currentHome.price_per_night %></p>
+                    </div>
+                    <button class="bg-rose-500 text-white px-8 py-4 rounded-2xl font-black hover:bg-rose-600 transition">Confirm</button>
+                </div>
+            </form>
+        </div>
+    <% } %>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<%- include('../partials/head') %>
+
+<body class="min-h-screen bg-slate-50 text-slate-900">
+<%- include('../partials/navbar') %>
+
+<main class="max-w-5xl mx-auto px-6 py-10">
+    <h1 class="text-4xl font-black mb-8">Inbox</h1>
+    <div class="space-y-4">
+        <% if (!messages || messages.length === 0) { %>
+            <div class="bg-white border border-dashed border-slate-300 rounded-3xl p-10 text-center text-slate-500">No messages yet.</div>
+        <% } %>
+        <% messages.forEach(message => { %>
+            <article class="bg-white border border-slate-200 rounded-3xl p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <p class="font-black">From <%= message.sender_name %></p>
+                    <p class="text-slate-500 text-sm"><%= message.property_title || 'General message' %></p>
+                    <p class="mt-2 text-slate-700"><%= message.body %></p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="/messages/<%= message.sender_id %>" class="bg-slate-900 text-white px-5 py-3 rounded-2xl font-bold">Reply</a>
+                    <% if (!message.is_read) { %>
+                        <form action="/messages/read" method="POST">
+                            <input type="hidden" name="messageId" value="<%= message.message_id %>">
+                            <button class="border border-slate-200 px-5 py-3 rounded-2xl font-bold">Mark Read</button>
+                        </form>
+                    <% } %>
+                </div>
+            </article>
+        <% }) %>
+    </div>
+</main>
+
+</body>
+</html>

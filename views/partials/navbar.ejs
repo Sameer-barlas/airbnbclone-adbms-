@@ -1,0 +1,57 @@
+<nav class="bg-white/95 backdrop-blur shadow-sm sticky top-0 z-50 border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center gap-6">
+        <a href="/" class="text-2xl font-black text-rose-500 tracking-tight">StayEase</a>
+
+        <div class="space-x-4 font-medium hidden md:flex items-center text-sm">
+            <a href="/" class="px-3 py-1.5 rounded-full transition <%= currentPage === 'home' ? 'bg-rose-100 text-rose-600 font-semibold' : 'hover:bg-gray-100 hover:text-rose-500' %>">
+                Homes
+            </a>
+
+            <% if (isGuest) { %>
+                <a href="/favourites" class="px-3 py-1.5 rounded-full transition <%= currentPage === 'favourites' ? 'bg-rose-100 text-rose-600 font-semibold' : 'hover:bg-gray-100 hover:text-rose-500' %>">
+                    Favourites
+                </a>
+                <a href="/bookings" class="px-3 py-1.5 rounded-full transition <%= currentPage === 'bookings' ? 'bg-rose-100 text-rose-600 font-semibold' : 'hover:bg-gray-100 hover:text-rose-500' %>">
+                    Bookings
+                </a>
+            <% } %>
+
+            <% if (isAuthenticated) { %>
+                <a href="/messages" class="px-3 py-1.5 rounded-full transition <%= currentPage === 'messages' ? 'bg-rose-100 text-rose-600 font-semibold' : 'hover:bg-gray-100 hover:text-rose-500' %>">
+                    Messages
+                </a>
+            <% } %>
+
+            <% if (isHost) { %>
+                <a href="/host/homes" class="px-3 py-1.5 rounded-full transition <%= currentPage === 'host-homes' ? 'bg-rose-100 text-rose-600 font-semibold' : 'hover:bg-gray-100 hover:text-rose-500' %>">
+                    Host
+                </a>
+                <a href="/host/add-home" class="px-3 py-1.5 rounded-full transition <%= currentPage === 'add-home' ? 'bg-rose-100 text-rose-600 font-semibold' : 'hover:bg-gray-100 hover:text-rose-500' %>">
+                    Add Home
+                </a>
+            <% } %>
+
+            <% if (isAdmin) { %>
+                <a href="/admin" class="px-3 py-1.5 rounded-full transition <%= currentPage === 'admin' ? 'bg-rose-100 text-rose-600 font-semibold' : 'hover:bg-gray-100 hover:text-rose-500' %>">
+                    Admin
+                </a>
+            <% } %>
+
+            <% if (isAuthenticated) { %>
+                <span class="text-slate-400">Hi, <%= currentUser.full_name %></span>
+                <form action="/logout" method="POST" class="inline">
+                    <button type="submit" class="px-3 py-1.5 rounded-full transition hover:bg-gray-100 hover:text-rose-500 font-medium">
+                        Logout
+                    </button>
+                </form>
+            <% } else { %>
+                <a href="/login" class="px-3 py-1.5 rounded-full transition <%= currentPage === 'login' ? 'bg-rose-100 text-rose-600 font-semibold' : 'hover:bg-gray-100 hover:text-rose-500' %>">
+                    Login
+                </a>
+                <a href="/signup" class="px-4 py-2 rounded-full bg-slate-900 text-white hover:bg-slate-800 transition">
+                    Signup
+                </a>
+            <% } %>
+        </div>
+    </div>
+</nav>
