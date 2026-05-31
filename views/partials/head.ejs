@@ -4,4 +4,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%=pageTitle%></title>
     <link href="/output.css" rel="stylesheet">
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const revealSections = document.querySelectorAll('.reveal-on-scroll');
+            if (!revealSections.length) return;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.14 });
+
+            revealSections.forEach((section) => observer.observe(section));
+        });
+    </script>
 </head>

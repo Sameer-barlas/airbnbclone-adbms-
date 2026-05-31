@@ -1,66 +1,124 @@
 <%- include('../partials/head') %>
 
-<body class="min-h-screen bg-slate-50 text-slate-900">
+<body class="min-h-screen bg-gradient-to-br from-slate-100 via-sky-50/70 to-orange-50/60 text-slate-950">
 <%- include('../partials/navbar') %>
 
-<main class="max-w-6xl mx-auto px-6 py-10">
-    <div class="mb-10 text-center">
-        <p class="text-xs font-black uppercase tracking-[0.3em] text-rose-500">Booking history</p>
-        <h1 class="text-4xl font-black mt-2">Your Bookings</h1>
-    </div>
+<main class="relative overflow-hidden">
+    <% const safeBookings = bookings || []; %>
+    <% const formatDate = value => { const date = new Date(value); return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }); }; %>
+    <% const bookingGroups = [
+        { title: 'Upcoming bookings', rows: safeBookings.filter(book => book.status === 'pending' || book.status === 'confirmed') },
+        { title: 'Completed bookings', rows: safeBookings.filter(book => book.status === 'completed') },
+        { title: 'Cancelled bookings', rows: safeBookings.filter(book => book.status === 'cancelled') }
+    ]; %>
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(244,63,94,0.055),transparent_30%),radial-gradient(circle_at_85%_25%,rgba(251,146,60,0.11),transparent_32%),radial-gradient(circle_at_52%_75%,rgba(14,165,233,0.12),transparent_36%)]"></div>
 
-    <% if (message) { %>
-        <div class="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-emerald-700 font-semibold"><%= message %></div>
-    <% } %>
-    <% if (errorMessage) { %>
-        <div class="mb-6 rounded-2xl border border-rose-100 bg-rose-50 px-5 py-4 text-rose-700 font-semibold"><%= errorMessage %></div>
-    <% } %>
+    <div class="pointer-events-none absolute -left-28 top-20 h-96 w-96 rounded-full bg-rose-200/45 blur-3xl animate-float-slow"></div>
+    <div class="pointer-events-none absolute right-0 top-72 h-96 w-96 rounded-full bg-cyan-100/50 blur-3xl animate-float-slow"></div>
 
-    <div class="space-y-6">
-        <% if (!bookings || bookings.length === 0) { %>
-            <div class="bg-white rounded-3xl border border-dashed border-slate-300 p-12 text-center">
-                <h2 class="text-2xl font-black">No bookings found</h2>
-                <a href="/" class="mt-6 inline-block bg-rose-500 text-white px-8 py-3 rounded-2xl font-bold">Find a Home</a>
+    <section class="relative mx-auto max-w-6xl px-4 pt-10 sm:px-6">
+        <div class="relative overflow-hidden rounded-[2.75rem] border border-white bg-gradient-to-br from-slate-950 via-slate-900 to-rose-950 p-6 text-white shadow-2xl shadow-slate-300/70 sm:p-8 lg:p-10 animate-gradient-x">
+            <div class="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-rose-500/25 blur-3xl"></div>
+            <div class="relative grid gap-8 lg:grid-cols-[1fr_300px] lg:items-end">
+                <div class="animate-slide-in-left">
+                    <span class="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.28em] text-rose-200 backdrop-blur">Guest dashboard</span>
+                    <h1 class="mt-5 text-5xl font-black tracking-tight sm:text-6xl">Your Bookings</h1>
+                    <p class="mt-4 max-w-2xl leading-8 text-white/68">Track stays, payments, reviews, cancellations, and host conversations from one polished dashboard.</p>
+                </div>
+                <div class="animate-slide-in-right rounded-[1.75rem] border border-white/15 bg-white/10 p-5 backdrop-blur">
+                    <p class="text-xs font-black uppercase tracking-widest text-white/50">Total trips</p>
+                    <p class="mt-2 text-4xl font-black"><%= safeBookings.length %></p>
+                </div>
             </div>
+        </div>
+    </section>
+
+    <section class="relative z-10 mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <% if (message) { %>
+            <div class="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-emerald-700 font-semibold shadow-sm"><%= message %></div>
+        <% } %>
+        <% if (errorMessage) { %>
+            <div class="mb-6 rounded-2xl border border-rose-100 bg-rose-50 px-5 py-4 text-rose-700 font-semibold shadow-sm"><%= errorMessage %></div>
         <% } %>
 
-        <% bookings.forEach(book => { %>
-            <article class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
-                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                    <div>
-                        <span class="inline-block px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-slate-100 text-slate-600"><%= book.status %></span>
-                        <h2 class="text-2xl font-black mt-3"><%= book.property_title %></h2>
-                        <p class="text-slate-500 font-semibold"><%= book.city_name %>, <%= book.country %> hosted by <%= book.host_name %></p>
-                        <p class="mt-4 text-slate-700 font-bold"><%= book.check_in %> to <%= book.check_out %> | <%= book.nights %> nights | <%= book.num_guests %> guests</p>
-                        <p class="text-rose-500 text-2xl font-black mt-2">PKR <%= book.total_price %></p>
-                        <p class="text-sm text-slate-400">Payment: <%= book.payment_method || 'N/A' %> / <%= book.payment_status || 'N/A' %></p>
-                    </div>
-                    <div class="w-full md:w-64 space-y-3">
-                        <a href="/homedetails/<%= book.property_id %>" class="block text-center border border-slate-200 rounded-2xl py-3 font-bold">View Home</a>
-                        <% if (book.status === 'pending' || book.status === 'confirmed') { %>
-                            <form action="/bookings/cancel" method="POST">
-                                <input type="hidden" name="bookingId" value="<%= book.booking_id %>">
-                                <button class="w-full bg-slate-900 text-white rounded-2xl py-3 font-bold">Cancel Booking</button>
-                            </form>
-                        <% } %>
-                        <% if (book.status === 'completed') { %>
-                            <form action="/reviews" method="POST" class="space-y-2">
-                                <input type="hidden" name="bookingId" value="<%= book.booking_id %>">
-                                <select name="rating" class="w-full rounded-2xl border border-slate-200 px-3 py-2">
-                                    <% [5,4,3,2,1].forEach(rating => { %>
-                                        <option value="<%= rating %>"><%= rating %> stars</option>
-                                    <% }) %>
-                                </select>
-                                <textarea name="comment" rows="2" placeholder="Write a review" class="w-full rounded-2xl border border-slate-200 px-3 py-2"></textarea>
-                                <button class="w-full bg-rose-500 text-white rounded-2xl py-3 font-bold">Submit Review</button>
-                            </form>
-                        <% } %>
-                        <a href="/messages/<%= book.host_id %>" class="block text-center bg-rose-50 text-rose-600 rounded-2xl py-3 font-bold">Message Host</a>
-                    </div>
+        <div class="reveal-on-scroll space-y-8">
+            <% if (safeBookings.length === 0) { %>
+                <div class="overflow-hidden rounded-[2rem] border border-dashed border-slate-300 bg-white/85 p-12 text-center shadow-xl shadow-slate-200/60 backdrop-blur-xl">
+                    <h2 class="text-2xl font-black">No bookings found</h2>
+                    <p class="mt-2 text-slate-500">When you reserve a StayEase home, it will appear here.</p>
+                    <a href="/" class="mt-6 inline-block rounded-2xl bg-rose-500 px-8 py-3 font-bold text-white shadow-lg shadow-rose-100 transition hover:-translate-y-0.5 hover:bg-rose-600">Find a Home</a>
                 </div>
-            </article>
-        <% }) %>
-    </div>
+            <% } %>
+
+            <% bookingGroups.forEach(group => { %>
+                <% if (group.rows.length > 0) { %>
+                    <section>
+                        <div class="mb-4 flex items-center justify-between gap-4">
+                            <h2 class="text-2xl font-black"><%= group.title %></h2>
+                            <span class="rounded-full bg-white/80 px-4 py-2 text-xs font-black uppercase tracking-widest text-slate-500 shadow-sm"><%= group.rows.length %> records</span>
+                        </div>
+                        <div class="space-y-5">
+                            <% group.rows.forEach(book => { %>
+                                <article class="group overflow-hidden rounded-[2.25rem] border border-white bg-white/90 shadow-xl shadow-slate-200/70 backdrop-blur-xl transition duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-rose-100/70">
+                                    <div class="grid gap-0 md:grid-cols-[1fr_280px]">
+                                        <div class="p-6 sm:p-7">
+                                            <span class="inline-block rounded-full px-3 py-1 text-xs font-black uppercase tracking-widest <%= book.status === 'confirmed' ? 'bg-emerald-50 text-emerald-600' : book.status === 'pending' ? 'bg-amber-50 text-amber-600' : book.status === 'cancelled' ? 'bg-rose-50 text-rose-600' : 'bg-sky-50 text-sky-600' %>"><%= book.status %></span>
+                                            <h3 class="mt-4 text-3xl font-black"><%= book.property_title %></h3>
+                                            <p class="mt-1 font-semibold text-slate-500"><%= book.city_name %>, <%= book.country %> hosted by <%= book.host_name %></p>
+
+                                            <div class="mt-5 grid gap-3 sm:grid-cols-3">
+                                                <div class="rounded-2xl bg-slate-50 p-4">
+                                                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Dates</p>
+                                                    <p class="mt-1 text-sm font-black text-slate-700"><%= formatDate(book.check_in) %> to <%= formatDate(book.check_out) %></p>
+                                                </div>
+                                                <div class="rounded-2xl bg-slate-50 p-4">
+                                                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Stay</p>
+                                                    <p class="mt-1 text-sm font-black text-slate-700"><%= book.nights %> nights | <%= book.num_guests %> guests</p>
+                                                </div>
+                                                <div class="rounded-2xl bg-slate-50 p-4">
+                                                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Payment</p>
+                                                    <p class="mt-1 text-sm font-black text-slate-700"><%= book.payment_method || 'N/A' %> / <%= book.payment_status || 'N/A' %></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <aside class="flex flex-col justify-between border-t border-slate-100 bg-gradient-to-br from-rose-50 via-white to-orange-50 p-6 md:border-l md:border-t-0">
+                                            <div>
+                                                <p class="text-[10px] font-black uppercase tracking-widest text-rose-400">Total price</p>
+                                                <p class="mt-2 text-3xl font-black text-rose-600">PKR <%= book.total_price %></p>
+                                            </div>
+                                            <div class="mt-6 space-y-3">
+                                                <a href="/homedetails/<%= book.property_id %>" class="block rounded-2xl border border-slate-200 bg-white py-3 text-center font-bold transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600">View Home</a>
+                                                <% if (book.status === 'pending' || book.status === 'confirmed') { %>
+                                                    <form action="/bookings/cancel" method="POST">
+                                                        <input type="hidden" name="bookingId" value="<%= book.booking_id %>">
+                                                        <button class="w-full rounded-2xl bg-slate-950 py-3 font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800">Cancel Booking</button>
+                                                    </form>
+                                                <% } %>
+                                                <% if (book.status === 'completed') { %>
+                                                    <form action="/reviews" method="POST" class="space-y-2">
+                                                        <input type="hidden" name="bookingId" value="<%= book.booking_id %>">
+                                                        <select name="rating" class="w-full rounded-2xl border border-slate-200 bg-white/80 px-3 py-2 outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-100">
+                                                            <% [5,4,3,2,1].forEach(rating => { %>
+                                                                <option value="<%= rating %>"><%= rating %> stars</option>
+                                                            <% }) %>
+                                                        </select>
+                                                        <textarea name="comment" rows="2" placeholder="Write a review" class="w-full rounded-2xl border border-slate-200 bg-white/80 px-3 py-2 outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-100"></textarea>
+                                                        <button class="w-full rounded-2xl bg-rose-500 py-3 font-bold text-white transition hover:bg-rose-600">Submit Review</button>
+                                                    </form>
+                                                <% } %>
+                                                <a href="/messages/<%= book.host_id %>" class="block rounded-2xl bg-rose-50 py-3 text-center font-bold text-rose-600 transition hover:bg-rose-100">Message Host</a>
+                                            </div>
+                                        </aside>
+                                    </div>
+                                </article>
+                            <% }) %>
+                        </div>
+                    </section>
+                <% } %>
+            <% }) %>
+        </div>
+    </section>
 </main>
 
 </body>

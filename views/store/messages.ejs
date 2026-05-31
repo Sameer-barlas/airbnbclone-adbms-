@@ -1,33 +1,59 @@
 <%- include('../partials/head') %>
 
-<body class="min-h-screen bg-slate-50 text-slate-900">
+<body class="min-h-screen bg-gradient-to-br from-slate-100 via-sky-50/70 to-orange-50/60 text-slate-950">
 <%- include('../partials/navbar') %>
 
-<main class="max-w-5xl mx-auto px-6 py-10">
-    <h1 class="text-4xl font-black mb-8">Inbox</h1>
-    <div class="space-y-4">
-        <% if (!messages || messages.length === 0) { %>
-            <div class="bg-white border border-dashed border-slate-300 rounded-3xl p-10 text-center text-slate-500">No messages yet.</div>
-        <% } %>
-        <% messages.forEach(message => { %>
-            <article class="bg-white border border-slate-200 rounded-3xl p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                    <p class="font-black">From <%= message.sender_name %></p>
-                    <p class="text-slate-500 text-sm"><%= message.property_title || 'General message' %></p>
-                    <p class="mt-2 text-slate-700"><%= message.body %></p>
+<main class="relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(244,63,94,0.055),transparent_30%),radial-gradient(circle_at_85%_25%,rgba(251,146,60,0.11),transparent_32%),radial-gradient(circle_at_52%_75%,rgba(14,165,233,0.12),transparent_36%)]"></div>
+    <div class="pointer-events-none absolute -left-28 top-20 h-96 w-96 rounded-full bg-rose-200/45 blur-3xl animate-float-slow"></div>
+    <div class="pointer-events-none absolute right-0 top-72 h-96 w-96 rounded-full bg-sky-200/40 blur-3xl animate-float-slow"></div>
+
+    <section class="relative mx-auto max-w-5xl px-4 pt-10 sm:px-6">
+        <div class="relative overflow-hidden rounded-[2.75rem] border border-white bg-gradient-to-br from-slate-950 via-slate-900 to-rose-950 p-6 text-white shadow-2xl shadow-slate-300/70 sm:p-8 lg:p-10 animate-gradient-x">
+            <div class="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-rose-500/25 blur-3xl"></div>
+            <div class="relative animate-slide-in-left">
+                <span class="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.28em] text-rose-200 backdrop-blur">Messages</span>
+                <h1 class="mt-5 text-5xl font-black tracking-tight sm:text-6xl">Inbox</h1>
+                <p class="mt-4 max-w-2xl leading-8 text-white/68">Keep guest and host conversations clear, calm, and easy to follow.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="relative z-10 mx-auto max-w-5xl px-4 py-10 sm:px-6">
+        <div class="reveal-on-scroll space-y-4">
+            <% if (!messages || messages.length === 0) { %>
+                <div class="rounded-[2rem] border border-dashed border-slate-300 bg-white p-12 text-center text-slate-500 shadow-xl shadow-slate-200/60">
+                    <h2 class="text-2xl font-black text-slate-950">No messages yet</h2>
+                    <p class="mt-2">Your conversations will appear here.</p>
                 </div>
-                <div class="flex gap-3">
-                    <a href="/messages/<%= message.sender_id %>" class="bg-slate-900 text-white px-5 py-3 rounded-2xl font-bold">Reply</a>
-                    <% if (!message.is_read) { %>
-                        <form action="/messages/read" method="POST">
-                            <input type="hidden" name="messageId" value="<%= message.message_id %>">
-                            <button class="border border-slate-200 px-5 py-3 rounded-2xl font-bold">Mark Read</button>
-                        </form>
-                    <% } %>
-                </div>
-            </article>
-        <% }) %>
-    </div>
+            <% } %>
+            <% messages.forEach(message => { %>
+                <article class="group flex flex-col gap-4 rounded-[2rem] border border-white bg-white p-5 shadow-xl shadow-slate-200/60 transition hover:-translate-y-1 hover:shadow-2xl md:flex-row md:items-center md:justify-between">
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-rose-50 font-black text-rose-500">
+                                <%= (message.sender_name || 'U').charAt(0).toUpperCase() %>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="truncate font-black">From <%= message.sender_name %></p>
+                                <p class="truncate text-sm font-semibold text-slate-500"><%= message.property_title || 'General message' %></p>
+                            </div>
+                        </div>
+                        <p class="mt-3 line-clamp-2 text-slate-700"><%= message.body %></p>
+                    </div>
+                    <div class="flex shrink-0 flex-wrap gap-3">
+                        <a href="/messages/<%= message.sender_id %>" class="rounded-2xl bg-slate-950 px-5 py-3 font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800">Reply</a>
+                        <% if (!message.is_read) { %>
+                            <form action="/messages/read" method="POST">
+                                <input type="hidden" name="messageId" value="<%= message.message_id %>">
+                                <button class="rounded-2xl border border-slate-200 px-5 py-3 font-bold transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600">Mark Read</button>
+                            </form>
+                        <% } %>
+                    </div>
+                </article>
+            <% }) %>
+        </div>
+    </section>
 </main>
 
 </body>

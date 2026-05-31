@@ -1,45 +1,53 @@
 <%- include('../partials/head') %>
 
-<body class="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+<body class="min-h-screen bg-gradient-to-br from-slate-100 via-sky-50/70 to-orange-50/60 text-slate-950 flex flex-col">
 <%- include('../partials/navbar') %>
 
-<main class="flex-grow flex items-center justify-center px-4 py-12">
-    <div class="w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-xl p-8">
-        <div class="mb-8 text-center">
-            <h1 class="text-3xl font-black text-slate-900">Login</h1>
-            <p class="text-slate-500 mt-2">Access your StayFinder account.</p>
+<main class="relative flex-grow overflow-hidden px-4 py-12 sm:px-6">
+    <div class="pointer-events-none absolute -left-24 top-16 h-80 w-80 rounded-full bg-rose-200/50 blur-3xl animate-float-slow"></div>
+    <div class="pointer-events-none absolute right-0 top-40 h-96 w-96 rounded-full bg-cyan-100/60 blur-3xl animate-float-slow"></div>
+    <div class="pointer-events-none absolute bottom-10 left-1/2 h-72 w-72 rounded-full bg-orange-200/45 blur-3xl"></div>
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(244,63,94,0.10),transparent_32%),radial-gradient(circle_at_88%_30%,rgba(251,146,60,0.11),transparent_34%),radial-gradient(circle_at_50%_90%,rgba(14,165,233,0.12),transparent_35%)]"></div>
+
+    <section class="relative mx-auto max-w-md">
+        <div class="w-full rounded-[2.5rem] border border-slate-300/70 bg-white/80 p-6 shadow-2xl shadow-slate-300/50 backdrop-blur-xl sm:p-8">
+            <div class="mb-8 text-center">
+                <p class="mb-2 text-xs font-black uppercase tracking-[0.25em] text-rose-500">StayEase Login</p>
+                <h1 class="text-4xl font-black text-slate-950">Login</h1>
+                <p class="mt-2 text-slate-500">Access your StayEase account.</p>
+            </div>
+
+            <% if (errorMessage) { %>
+                <div class="mb-6 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-600">
+                    <%= errorMessage %>
+                </div>
+            <% } %>
+
+            <form action="/login" method="POST" class="space-y-5">
+                <div>
+                    <label class="mb-1.5 block text-xs font-black uppercase tracking-widest text-slate-500">Email</label>
+                    <input type="email" name="email" value="<%= oldInput.email %>" required
+                           class="w-full rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm font-semibold outline-none transition focus:border-rose-400 focus:ring-4 focus:ring-rose-100">
+                </div>
+
+                <div>
+                    <label class="mb-1.5 block text-xs font-black uppercase tracking-widest text-slate-500">Password</label>
+                    <input type="password" name="password" required
+                           class="w-full rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm font-semibold outline-none transition focus:border-rose-400 focus:ring-4 focus:ring-rose-100">
+                </div>
+
+                <button type="submit"
+                        class="w-full rounded-2xl bg-rose-500 py-4 font-black text-white shadow-xl shadow-rose-100 transition hover:-translate-y-1 hover:bg-rose-600">
+                    Login
+                </button>
+            </form>
+
+            <p class="mt-6 text-center text-sm text-slate-500">
+                New here?
+                <a href="/signup" class="font-bold text-rose-500 hover:text-rose-600">Create an account</a>
+            </p>
         </div>
-
-        <% if (errorMessage) { %>
-            <div class="mb-6 rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-600">
-                <%= errorMessage %>
-            </div>
-        <% } %>
-
-        <form action="/login" method="POST" class="space-y-5">
-            <div>
-                <label class="block mb-1.5 text-xs font-black uppercase tracking-widest text-slate-500">Email</label>
-                <input type="email" name="email" value="<%= oldInput.email %>" required
-                       class="w-full border-2 border-slate-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-100">
-            </div>
-
-            <div>
-                <label class="block mb-1.5 text-xs font-black uppercase tracking-widest text-slate-500">Password</label>
-                <input type="password" name="password" required
-                       class="w-full border-2 border-slate-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-100">
-            </div>
-
-            <button type="submit"
-                    class="w-full bg-rose-500 text-white py-4 rounded-2xl font-bold hover:bg-rose-600 transition">
-                Login
-            </button>
-        </form>
-
-        <p class="text-center text-sm text-slate-500 mt-6">
-            New here?
-            <a href="/signup" class="font-bold text-rose-500 hover:text-rose-600">Create an account</a>
-        </p>
-    </div>
+    </section>
 </main>
 
 </body>

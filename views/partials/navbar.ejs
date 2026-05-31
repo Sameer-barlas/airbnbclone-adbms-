@@ -1,8 +1,8 @@
-<nav class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/90 backdrop-blur-xl">
-    <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+<nav class="sticky top-0 z-50 border-b border-white/70 bg-white/80 shadow-sm shadow-slate-200/50 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex items-center justify-between gap-4">
             <a href="/" class="group inline-flex items-center gap-3">
-                <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-500 text-lg font-black text-white shadow-lg shadow-rose-200 transition group-hover:scale-105">S</span>
+                <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 to-orange-400 text-lg font-black text-white shadow-lg shadow-rose-200 transition group-hover:scale-105">S</span>
                 <span>
                     <span class="block text-2xl font-black tracking-tight text-slate-950">StayEase</span>
                     <span class="hidden text-[10px] font-black uppercase tracking-[0.28em] text-rose-500 sm:block">Premium stays</span>
@@ -10,50 +10,50 @@
             </a>
         </div>
 
-        <div class="flex items-center gap-2 overflow-x-auto pb-1 text-sm font-bold lg:flex-wrap lg:justify-end lg:overflow-visible lg:pb-0">
-            <a href="/" class="whitespace-nowrap rounded-full px-4 py-2 transition <%= currentPage === 'home' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600' %>">
+        <div class="scrollbar-hide flex items-center gap-2 overflow-x-auto pb-1 text-sm font-bold lg:flex-wrap lg:justify-end lg:overflow-visible lg:pb-0">
+            <a href="/" class="whitespace-nowrap rounded-full px-4 py-2 transition-all <%= currentPage === 'home' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:shadow-sm' %>">
                 Homes
             </a>
 
             <% if (isGuest) { %>
-                <a href="/favourites" class="whitespace-nowrap rounded-full px-4 py-2 transition <%= currentPage === 'favourites' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600' %>">
+                <a href="/favourites" class="whitespace-nowrap rounded-full px-4 py-2 transition-all <%= currentPage === 'favourites' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:shadow-sm' %>">
                     Favourites
                 </a>
-                <a href="/bookings" class="whitespace-nowrap rounded-full px-4 py-2 transition <%= currentPage === 'bookings' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600' %>">
+                <a href="/bookings" class="whitespace-nowrap rounded-full px-4 py-2 transition-all <%= currentPage === 'bookings' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:shadow-sm' %>">
                     Bookings
                 </a>
             <% } %>
 
             <% if (isAuthenticated) { %>
-                <a href="/messages" class="whitespace-nowrap rounded-full px-4 py-2 transition <%= currentPage === 'messages' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600' %>">
+                <a href="/messages" class="whitespace-nowrap rounded-full px-4 py-2 transition-all <%= currentPage === 'messages' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:shadow-sm' %>">
                     Messages
                 </a>
             <% } %>
 
             <% if (isHost) { %>
-                <a href="/host/homes" class="whitespace-nowrap rounded-full px-4 py-2 transition <%= currentPage === 'host-homes' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600' %>">
+                <a href="/host/homes" class="whitespace-nowrap rounded-full px-4 py-2 transition-all <%= currentPage === 'host-homes' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:shadow-sm' %>">
                     Host
                 </a>
-                <a href="/host/add-home" class="whitespace-nowrap rounded-full px-4 py-2 transition <%= currentPage === 'add-home' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600' %>">
+                <a href="/host/add-home" class="whitespace-nowrap rounded-full px-4 py-2 transition-all <%= currentPage === 'add-home' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:shadow-sm' %>">
                     Add Home
                 </a>
             <% } %>
 
             <% if (isAdmin) { %>
-                <a href="/admin" class="whitespace-nowrap rounded-full px-4 py-2 transition <%= currentPage === 'admin' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600' %>">
+                <a href="/admin" class="whitespace-nowrap rounded-full px-4 py-2 transition-all <%= currentPage === 'admin' ? 'bg-slate-950 text-white shadow-lg shadow-slate-200' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:shadow-sm' %>">
                     Admin
                 </a>
             <% } %>
 
             <% if (isAuthenticated) { %>
-                <span class="hidden whitespace-nowrap rounded-full bg-slate-100 px-4 py-2 text-slate-500 xl:inline-flex">Hi, <%= currentUser.full_name %></span>
+                <span class="hidden whitespace-nowrap rounded-full border border-white bg-white/80 px-4 py-2 text-slate-500 shadow-sm xl:inline-flex">Hi, <%= currentUser.full_name %></span>
                 <form action="/logout" method="POST" class="inline">
-                    <button type="submit" class="whitespace-nowrap rounded-full border border-slate-200 bg-white px-4 py-2 text-slate-700 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600">
+                    <button type="submit" class="whitespace-nowrap rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-slate-700 transition-all hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 hover:shadow-sm">
                         Logout
                     </button>
                 </form>
             <% } else { %>
-                <a href="/login" class="whitespace-nowrap rounded-full px-4 py-2 text-slate-600 transition hover:bg-rose-50 hover:text-rose-600">
+                <a href="/login" class="whitespace-nowrap rounded-full px-4 py-2 text-slate-600 transition-all hover:bg-rose-50 hover:text-rose-600">
                     Login
                 </a>
                 <a href="/signup" class="whitespace-nowrap rounded-full bg-slate-950 px-5 py-2.5 text-white shadow-lg shadow-slate-200 transition hover:-translate-y-0.5 hover:bg-rose-500 hover:shadow-rose-200">
