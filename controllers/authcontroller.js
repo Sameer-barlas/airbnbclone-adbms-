@@ -50,6 +50,8 @@ exports.verifyToken = async (req, res, next) => {
                     phone: user.phone,
                     role: user.role
                 }
+            } else {
+                res.clearCookie(COOKIE_NAME)
             }
         } catch (err) {
             res.clearCookie(COOKIE_NAME)

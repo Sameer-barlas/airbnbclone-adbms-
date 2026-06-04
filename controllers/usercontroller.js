@@ -303,12 +303,18 @@ exports.getconversation = async (req, res) => {
 }
 
 exports.sendmessage = async (req, res) => {
+    const messageBody = (req.body.body || '').trim()
+
+    if (!messageBody) {
+        return res.redirect(req.body.redirectTo || '/messages')
+    }
+
     try {
         await Message.send({
             senderId: req.user.user_id,
             receiverId: req.body.receiverId,
             propertyId: req.body.propertyId,
-            body: req.body.body
+            body: messageBody
         })
         res.redirect(req.body.redirectTo || '/messages')
     } catch (err) {
