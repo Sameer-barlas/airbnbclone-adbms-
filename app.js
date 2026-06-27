@@ -23,7 +23,10 @@ app.use('/',userRouter)
 app.use('/host',hostRouter)
 app.use('/admin',adminRouter)
 app.use(errorcontroller.error)
-const port =3000;
-app.listen(port,()=>{
-    console.log(`server is running on port http://localhost:${port}`)
-})
+require("dotenv").config();
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`server is running on port ${port}`);
+});
