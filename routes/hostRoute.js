@@ -10,19 +10,29 @@ const upload=multer({
         if(['image/jpeg','image/png','image/webp'].includes(file.mimetype)){
             cb(null,true)
         }else{
-            cb(new Error('Only JPG, PNG, and WEBP images are allowed.'))
+            req.uploadError = new Error('Only JPG, PNG, and WEBP images are allowed.')
+            cb(null,false)
         }
     }
 })
+
+const uploadHouseImage = (req, res, next) => {
+    upload.single('houseImage')(req, res, err => {
+        if (err) {
+            req.uploadError = err
+        }
+        next()
+    })
+}
 
 hostRouter.use(authcontroller.requireRole('host'))
 
 hostRouter.get("/homes",hostcontroller.gethosthomes)
 hostRouter.get("/properties",hostcontroller.gethosthomes)
 hostRouter.get("/add-home",hostcontroller.getaddhome)
-hostRouter.post("/add-home",upload.single('houseImage'),hostcontroller.postaddhome)
+hostRouter.post("/add-home",uploadHouseImage,hostcontroller.postaddhome)
 hostRouter.get("/edit-home/:id",hostcontroller.getedithome)
-hostRouter.post("/edit-home/",upload.single('houseImage'),hostcontroller.postedithome)
+hostRouter.post("/edit-home/",uploadHouseImage,hostcontroller.postedithome)
 hostRouter.post("/delete-home",hostcontroller.deletehome)
 hostRouter.post("/availability",hostcontroller.setavailability)
 module.exports=hostRouter

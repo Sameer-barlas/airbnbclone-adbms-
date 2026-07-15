@@ -67,7 +67,11 @@ VALUES
 ((SELECT user_id FROM users WHERE email = 'fakebarlas5@gmail.com'), (SELECT city_id FROM cities WHERE city_name = 'Islamabad' LIMIT 1), 'Margalla View Villa Islamabad', 'Margalla View Villa Islamabad is a premium StayEase listing with verified amenities, comfortable rooms, and a clean guest-ready setup.', 'villa', 22000, 9, 5, 33.7380, 73.0845, 1),
 ((SELECT user_id FROM users WHERE email = 'fakebarlas5@gmail.com'), (SELECT city_id FROM cities WHERE city_name = 'Lahore' LIMIT 1), 'Lahore Garden Studio', 'Lahore Garden Studio is a premium StayEase listing with verified amenities, comfortable rooms, and a clean guest-ready setup.', 'studio', 5200, 2, 1, 31.5497, 74.3436, 1),
 ((SELECT user_id FROM users WHERE email = 'fakebarlas5@gmail.com'), (SELECT city_id FROM cities WHERE city_name = 'Dubai' LIMIT 1), 'Dubai Downtown Luxury Room', 'Dubai Downtown Luxury Room is a premium StayEase listing with verified amenities, comfortable rooms, and a clean guest-ready setup.', 'room', 15500, 2, 1, 25.2048, 55.2708, 1),
-((SELECT user_id FROM users WHERE email = 'fakebarlas5@gmail.com'), (SELECT city_id FROM cities WHERE city_name = 'Istanbul' LIMIT 1), 'Bosphorus Apartment Istanbul', 'Bosphorus Apartment Istanbul is a premium StayEase listing with verified amenities, comfortable rooms, and a clean guest-ready setup.', 'apartment', 16500, 5, 2, 41.0430, 29.0094, 1);
+((SELECT user_id FROM users WHERE email = 'fakebarlas5@gmail.com'), (SELECT city_id FROM cities WHERE city_name = 'Istanbul' LIMIT 1), 'Bosphorus Apartment Istanbul', 'Bosphorus Apartment Istanbul is a premium StayEase listing with verified amenities, comfortable rooms, and a clean guest-ready setup.', 'apartment', 16500, 5, 2, 41.0430, 29.0094, 1),
+((SELECT user_id FROM users WHERE email = 'fakebarlas3@gmail.com'), (SELECT city_id FROM cities WHERE city_name = 'Lahore' LIMIT 1), 'DHA Executive Apartment Lahore', 'DHA Executive Apartment Lahore is a furnished host listing with bright rooms, fast WiFi, secure parking, and easy access to cafes and shopping.', 'apartment', 10500, 4, 2, 31.4632, 74.4097, 1),
+((SELECT user_id FROM users WHERE email = 'fakebarlas3@gmail.com'), (SELECT city_id FROM cities WHERE city_name = 'Karachi' LIMIT 1), 'Clifton Corporate Suite', 'Clifton Corporate Suite is a polished guest-ready stay near the seafront with air conditioning, workspace comfort, and reliable utilities.', 'studio', 7800, 2, 1, 24.8172, 67.0321, 1),
+((SELECT user_id FROM users WHERE email = 'fakebarlas5@gmail.com'), (SELECT city_id FROM cities WHERE city_name = 'Islamabad' LIMIT 1), 'Blue Area Business House', 'Blue Area Business House gives families and work travelers a roomy Islamabad stay with kitchen access, parking, and quick routes to city landmarks.', 'house', 16500, 6, 3, 33.7077, 73.0515, 1),
+((SELECT user_id FROM users WHERE email = 'fakebarlas5@gmail.com'), (SELECT city_id FROM cities WHERE city_name = 'Dubai' LIMIT 1), 'Jumeirah Beach Premium Room', 'Jumeirah Beach Premium Room is a compact luxury listing with resort-style comfort, balcony views, TV, and close access to Dubai beach attractions.', 'room', 18500, 2, 1, 25.2040, 55.2400, 1);
 
 INSERT INTO property_amenities (property_id, amenity_id)
 SELECT p.property_id, a.amenity_id
@@ -140,6 +144,30 @@ SELECT p.property_id, a.amenity_id
 FROM properties p
 JOIN amenities a ON a.name IN ('WiFi', 'Kitchen', 'TV', 'Washing Machine', 'Balcony', 'Hot Water')
 WHERE p.title = 'Bosphorus Apartment Istanbul';
+
+INSERT INTO property_amenities (property_id, amenity_id)
+SELECT p.property_id, a.amenity_id
+FROM properties p
+JOIN amenities a ON a.name IN ('WiFi', 'Air Conditioning', 'Kitchen', 'Parking', 'TV')
+WHERE p.title = 'DHA Executive Apartment Lahore';
+
+INSERT INTO property_amenities (property_id, amenity_id)
+SELECT p.property_id, a.amenity_id
+FROM properties p
+JOIN amenities a ON a.name IN ('WiFi', 'Air Conditioning', 'TV', 'Hot Water', 'Balcony')
+WHERE p.title = 'Clifton Corporate Suite';
+
+INSERT INTO property_amenities (property_id, amenity_id)
+SELECT p.property_id, a.amenity_id
+FROM properties p
+JOIN amenities a ON a.name IN ('WiFi', 'Kitchen', 'Parking', 'Washing Machine', 'Generator', 'Hot Water')
+WHERE p.title = 'Blue Area Business House';
+
+INSERT INTO property_amenities (property_id, amenity_id)
+SELECT p.property_id, a.amenity_id
+FROM properties p
+JOIN amenities a ON a.name IN ('WiFi', 'Air Conditioning', 'TV', 'Balcony', 'Swimming Pool')
+WHERE p.title = 'Jumeirah Beach Premium Room';
 
 SELECT role, COUNT(*) AS total_users
 FROM users

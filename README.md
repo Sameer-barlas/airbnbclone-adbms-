@@ -36,7 +36,7 @@ The seed file creates:
 - 1 admin
 - 2 guests
 - 2 hosts
-- 12 active homes
+- 16 active homes
 - amenities linked with homes
 
 Images are already available in:
@@ -51,7 +51,7 @@ The app expects home images in this format:
 property-1.png
 property-2.png
 ...
-property-12.png
+property-16.png
 ```
 
 ## 3. Check Database Connection
@@ -164,3 +164,54 @@ npm run build:css
 ```
 
 If images do not appear, make sure the `public/uploads/properties` folder is present.
+
+## Upload Changes To GitHub And Deploy
+
+After making code, CSS, seed, or image changes, run:
+
+```bash
+git status
+git add app.js controllers routes views public database README.md
+git commit -m "Add host seed homes and form fixes"
+git push origin main
+```
+
+On your hosting/domain server:
+
+```bash
+git pull origin main
+npm install
+npm run build:css
+```
+
+Then restart the Node app from your hosting panel or process manager.
+
+For a fresh database, import these files in MySQL:
+
+```text
+database/airbnb_adbms_schema.sql
+database/stayease_demo_seed.sql
+```
+
+If the site is already live with existing bookings/users, do not rerun the full demo seed because it deletes demo tables first. Add only the new rows manually or import a non-destructive extra seed.
+
+Make sure your production environment variables point to the live database:
+
+```text
+DB_HOST
+DB_PORT
+DB_USER
+DB_PASSWORD
+DB_NAME
+JWT_SECRET
+PORT
+```
+
+The uploaded property images must also be committed and deployed:
+
+```text
+public/uploads/properties/property-13.png
+public/uploads/properties/property-14.png
+public/uploads/properties/property-15.png
+public/uploads/properties/property-16.png
+```

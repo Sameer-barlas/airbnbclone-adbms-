@@ -22,6 +22,7 @@ app.use(authRouter)
 app.use('/',userRouter)
 app.use('/host',hostRouter)
 app.use('/admin',adminRouter)
+app.use(errorcontroller.serverError)
 app.use(errorcontroller.error)
 require("dotenv").config();
 

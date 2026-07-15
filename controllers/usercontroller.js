@@ -14,6 +14,16 @@ const getSearchInput = req => ({
     maxPrice: req.query.maxPrice || ''
 })
 
+const fetchCitiesSafely = async () => {
+    try {
+        const [cities] = await Property.fetchCities()
+        return cities
+    } catch (err) {
+        console.log(err)
+        return []
+    }
+}
+
 exports.gethomes = async (req, res) => {
     try {
         const [properties] = await Property.fetchListings()
@@ -28,7 +38,7 @@ exports.gethomes = async (req, res) => {
             })
         }
 
-        const [cities] = await Property.fetchCities()
+        const cities = await fetchCitiesSafely()
 
         res.render('store/home', {
             registeredHomes,
@@ -69,7 +79,7 @@ exports.searchproperties = async (req, res) => {
 
     try {
         const [rows] = await Property.search(searchInput)
-        const [cities] = await Property.fetchCities()
+        const cities = await fetchCitiesSafely()
         let searchResults = rows[0] || []
 
         if (searchInput.checkIn && searchInput.checkOut) {
@@ -93,7 +103,7 @@ exports.searchproperties = async (req, res) => {
         })
     } catch (err) {
         console.log(err)
-        const [cities] = await Property.fetchCities()
+        const cities = await fetchCitiesSafely()
         res.render('store/home', {
             registeredHomes: [],
             cities,

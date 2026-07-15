@@ -4,6 +4,12 @@
 <%- include('../partials/navbar') %>
 
 <main class="relative overflow-hidden">
+    <% const formCities = Array.isArray(cities) ? cities : []; %>
+    <% const formAmenities = Array.isArray(amenities) ? amenities : []; %>
+    <% const formPropertyTypes = Array.isArray(propertyTypes) ? propertyTypes : []; %>
+    <% const selectedAmenityValues = (Array.isArray(selectedAmenities) ? selectedAmenities : []).map(String); %>
+    <% const selectedCityId = currentHome ? String(currentHome.city_id || currentHome.cityId || '') : ''; %>
+    <% const canSaveHome = formCities.length > 0; %>
     <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(244,63,94,0.055),transparent_30%),radial-gradient(circle_at_85%_25%,rgba(251,146,60,0.11),transparent_32%),radial-gradient(circle_at_52%_75%,rgba(14,165,233,0.12),transparent_36%)]"></div>
     <div class="pointer-events-none absolute -left-28 top-20 h-96 w-96 rounded-full bg-rose-200/45 blur-3xl animate-float-slow"></div>
     <div class="pointer-events-none absolute right-0 top-80 h-96 w-96 rounded-full bg-cyan-100/50 blur-3xl animate-float-slow"></div>
@@ -69,19 +75,22 @@
                     <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
                         <div>
                             <label class="mb-2 block text-xs font-black uppercase tracking-widest text-slate-400">City</label>
-                            <select name="cityId" required class="w-full rounded-2xl border border-slate-200 bg-white/80 px-5 py-4 font-semibold outline-none transition focus:border-rose-400 focus:ring-4 focus:ring-rose-100">
-                                <option value="">Choose city</option>
-                                <% cities.forEach(city => { %>
-                                    <option value="<%= city.city_id %>" <%= String(currentHome && (currentHome.city_id || currentHome.cityId)) === String(city.city_id) ? 'selected' : '' %>>
+                            <select name="cityId" required <%= canSaveHome ? '' : 'disabled' %> class="w-full rounded-2xl border border-slate-200 bg-white/80 px-5 py-4 pr-12 font-semibold outline-none transition focus:border-rose-400 focus:ring-4 focus:ring-rose-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400">
+                                <option value=""><%= canSaveHome ? 'Choose city' : 'No cities available' %></option>
+                                <% formCities.forEach(city => { %>
+                                    <option value="<%= city.city_id %>" <%= selectedCityId === String(city.city_id) ? 'selected' : '' %>>
                                         <%= city.city_name %>, <%= city.country %>
                                     </option>
                                 <% }) %>
                             </select>
+                            <% if (!canSaveHome) { %>
+                                <p class="mt-2 text-xs font-semibold text-rose-500">Add rows to the cities table, then reload this form.</p>
+                            <% } %>
                         </div>
                         <div>
                             <label class="mb-2 block text-xs font-black uppercase tracking-widest text-slate-400">Home Type</label>
-                            <select name="propertyType" required class="w-full rounded-2xl border border-slate-200 bg-white/80 px-5 py-4 font-semibold outline-none transition focus:border-rose-400 focus:ring-4 focus:ring-rose-100">
-                                <% propertyTypes.forEach(type => { %>
+                            <select name="propertyType" required class="w-full rounded-2xl border border-slate-200 bg-white/80 px-5 py-4 pr-12 font-semibold outline-none transition focus:border-rose-400 focus:ring-4 focus:ring-rose-100">
+                                <% formPropertyTypes.forEach(type => { %>
                                     <option value="<%= type %>" <%= (currentHome && currentHome.property_type === type) || (currentHome && currentHome.propertyType === type) ? 'selected' : '' %>><%= type %></option>
                                 <% }) %>
                             </select>
@@ -122,16 +131,19 @@
                     <div>
                         <label class="mb-3 block text-xs font-black uppercase tracking-widest text-slate-400">Amenities</label>
                         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                            <% amenities.forEach(amenity => { %>
+                            <% if (formAmenities.length === 0) { %>
+                                <p class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-500 sm:col-span-2 xl:col-span-3">No amenities found. Add amenities in MySQL if you want hosts to tag listings.</p>
+                            <% } %>
+                            <% formAmenities.forEach(amenity => { %>
                                 <label class="cursor-pointer rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm font-bold transition has-[:checked]:border-rose-300 has-[:checked]:bg-rose-50 has-[:checked]:text-rose-600 hover:border-rose-200 hover:bg-rose-50">
-                                    <input type="checkbox" name="amenityIds" value="<%= amenity.amenity_id %>" class="mr-2 accent-rose-500" <%= selectedAmenities.includes(String(amenity.amenity_id)) ? 'checked' : '' %>>
+                                    <input type="checkbox" name="amenityIds" value="<%= amenity.amenity_id %>" class="mr-2 accent-rose-500" <%= selectedAmenityValues.includes(String(amenity.amenity_id)) ? 'checked' : '' %>>
                                     <%= amenity.name %>
                                 </label>
                             <% }) %>
                         </div>
                     </div>
 
-                    <button class="w-full rounded-2xl bg-rose-500 py-4 font-black text-white shadow-xl shadow-rose-100 transition hover:-translate-y-1 hover:bg-rose-600 hover:shadow-rose-200">
+                    <button <%= canSaveHome ? '' : 'disabled' %> class="w-full rounded-2xl bg-rose-500 py-4 font-black text-white shadow-xl shadow-rose-100 transition hover:-translate-y-1 hover:bg-rose-600 hover:shadow-rose-200 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none disabled:hover:translate-y-0">
                         <%= editting ? 'Update Home' : 'Create Home' %>
                     </button>
                 </div>

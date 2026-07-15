@@ -4,6 +4,11 @@ const propertyImage = require('../utils/propertyImage')
 
 const propertyTypes = ['apartment', 'house', 'villa', 'studio', 'room']
 
+const toArray = value => {
+    if (!value) return []
+    return Array.isArray(value) ? value : [value]
+}
+
 const buildPropertyData = body => ({
     cityId: body.cityId,
     title: body.title,
@@ -14,7 +19,7 @@ const buildPropertyData = body => ({
     totalRooms: body.totalRooms,
     latitude: body.latitude,
     longitude: body.longitude,
-    amenityIds: body.amenityIds
+    amenityIds: toArray(body.amenityIds)
 })
 
 const renderPropertyForm = async (res, options) => {
@@ -26,6 +31,59 @@ const renderPropertyForm = async (res, options) => {
         propertyTypes,
         ...options
     })
+}
+
+const validatePropertyData = (data, cities, amenities) => {
+    const errors = []
+    const validCityIds = new Set(cities.map(city => String(city.city_id)))
+    const validAmenityIds = new Set(amenities.map(amenity => String(amenity.amenity_id)))
+
+    if (!data.title || !data.title.trim()) {
+        errors.push('Title is required.')
+    }
+
+    if (!validCityIds.has(String(data.cityId || ''))) {
+        errors.push(cities.length ? 'Please choose a valid city.' : 'No cities are available. Add cities in MySQL before creating a home.')
+    }
+
+    if (!propertyTypes.includes(data.propertyType)) {
+        errors.push('Please choose a valid home type.')
+    }
+
+    if (!Number.isFinite(Number(data.pricePerNight)) || Number(data.pricePerNight) < 1) {
+        errors.push('Price per night must be at least 1.')
+    }
+
+    if (!Number.isFinite(Number(data.maxGuests)) || Number(data.maxGuests) < 1 || Number(data.maxGuests) > 50) {
+        errors.push('Max guests must be between 1 and 50.')
+    }
+
+    if (!Number.isFinite(Number(data.totalRooms)) || Number(data.totalRooms) < 1) {
+        errors.push('Rooms must be at least 1.')
+    }
+
+    const invalidAmenity = data.amenityIds.find(amenityId => !validAmenityIds.has(String(amenityId)))
+    if (invalidAmenity) {
+        errors.push('Please choose only valid amenities.')
+    }
+
+    return errors
+}
+
+const renderPropertyFormWithInput = async (res, options, statusCode = 422) => {
+    res.status(statusCode)
+    await renderPropertyForm(res, {
+        ...options,
+        selectedAmenities: toArray(options.selectedAmenities).map(String)
+    })
+}
+
+const getUploadErrorMessage = err => {
+    if (!err) return null
+    if (err.code === 'LIMIT_FILE_SIZE') {
+        return 'House image must be 5MB or smaller.'
+    }
+    return err.message || 'Could not upload house image.'
 }
 
 exports.gethosthomes = async (req, res) => {
@@ -76,20 +134,49 @@ exports.getaddhome = async (req, res) => {
 }
 
 exports.postaddhome = async (req, res) => {
+    const data = buildPropertyData(req.body)
+
     try {
-        const propertyId = await Property.create(req.user.user_id, buildPropertyData(req.body))
+        const uploadErrorMessage = getUploadErrorMessage(req.uploadError)
+        if (uploadErrorMessage) {
+            return renderPropertyFormWithInput(res, {
+                pageTitle: 'Add Home',
+                currentPage: 'add-home',
+                editting: false,
+                currentHome: req.body,
+                selectedAmenities: data.amenityIds,
+                errorMessage: uploadErrorMessage
+            })
+        }
+
+        const [cities] = await Property.fetchCities()
+        const [amenities] = await Property.fetchAmenities()
+        const validationErrors = validatePropertyData(data, cities, amenities)
+
+        if (validationErrors.length) {
+            return renderPropertyFormWithInput(res, {
+                pageTitle: 'Add Home',
+                currentPage: 'add-home',
+                editting: false,
+                currentHome: req.body,
+                selectedAmenities: data.amenityIds,
+                errorMessage: validationErrors.join(' ')
+            })
+        }
+
+        const propertyId = await Property.create(req.user.user_id, data)
         propertyImage.saveImage(propertyId, req.file)
         res.redirect('/host/homes?message=Home added successfully.')
     } catch (err) {
         console.log(err)
-        await renderPropertyForm(res, {
+        await renderPropertyFormWithInput(res, {
             pageTitle: 'Add Home',
             currentPage: 'add-home',
             editting: false,
             currentHome: req.body,
-            selectedAmenities: Array.isArray(req.body.amenityIds) ? req.body.amenityIds : [req.body.amenityIds].filter(Boolean),
-            errorMessage: err.message
-        })
+            selectedAmenities: data.amenityIds,
+            errorMessage: err.sqlState === '23000' ? 'Please choose a valid city and amenities.' : err.message
+        }, 500)
     }
 }
 
@@ -121,13 +208,69 @@ exports.getedithome = async (req, res) => {
 }
 
 exports.postedithome = async (req, res) => {
+    const data = buildPropertyData(req.body)
+
     try {
-        await Property.update(req.body.id, req.user.user_id, buildPropertyData(req.body))
+        const [properties] = await Property.findForHost(req.body.id, req.user.user_id)
+
+        if (!properties[0]) {
+            return res.redirect('/host/homes?message=Home not found.')
+        }
+
+        const uploadErrorMessage = getUploadErrorMessage(req.uploadError)
+        if (uploadErrorMessage) {
+            return renderPropertyFormWithInput(res, {
+                currentHome: {
+                    ...properties[0],
+                    ...req.body,
+                    property_id: req.body.id,
+                    imageUrl: propertyImage.getImageUrl(req.body.id)
+                },
+                pageTitle: 'Edit Home',
+                currentPage: 'edit-home',
+                editting: true,
+                selectedAmenities: data.amenityIds,
+                errorMessage: uploadErrorMessage
+            })
+        }
+
+        const [cities] = await Property.fetchCities()
+        const [amenities] = await Property.fetchAmenities()
+        const validationErrors = validatePropertyData(data, cities, amenities)
+
+        if (validationErrors.length) {
+            return renderPropertyFormWithInput(res, {
+                currentHome: {
+                    ...properties[0],
+                    ...req.body,
+                    property_id: req.body.id,
+                    imageUrl: propertyImage.getImageUrl(req.body.id)
+                },
+                pageTitle: 'Edit Home',
+                currentPage: 'edit-home',
+                editting: true,
+                selectedAmenities: data.amenityIds,
+                errorMessage: validationErrors.join(' ')
+            })
+        }
+
+        await Property.update(req.body.id, req.user.user_id, data)
         propertyImage.saveImage(req.body.id, req.file)
         res.redirect('/host/homes?message=Home updated successfully.')
     } catch (err) {
         console.log(err)
-        res.redirect('/host/homes?message=Could not update home.')
+        await renderPropertyFormWithInput(res, {
+            currentHome: {
+                ...req.body,
+                property_id: req.body.id,
+                imageUrl: propertyImage.getImageUrl(req.body.id)
+            },
+            pageTitle: 'Edit Home',
+            currentPage: 'edit-home',
+            editting: true,
+            selectedAmenities: data.amenityIds,
+            errorMessage: err.sqlState === '23000' ? 'Please choose a valid city and amenities.' : 'Could not update home.'
+        }, 500)
     }
 }
 
