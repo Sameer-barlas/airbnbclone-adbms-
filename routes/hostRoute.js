@@ -32,7 +32,7 @@ hostRouter.get("/properties",hostcontroller.gethosthomes)
 hostRouter.get("/add-home",hostcontroller.getaddhome)
 hostRouter.post("/add-home",uploadHouseImage,hostcontroller.postaddhome)
 hostRouter.get("/edit-home/:id",hostcontroller.getedithome)
-hostRouter.post("/edit-home/",uploadHouseImage,hostcontroller.postedithome)
+hostRouter.post(["/edit-home", "/edit-home/"],uploadHouseImage,hostcontroller.postedithome)
 hostRouter.post("/delete-home",hostcontroller.deletehome)
 hostRouter.post("/availability",hostcontroller.setavailability)
 module.exports=hostRouter

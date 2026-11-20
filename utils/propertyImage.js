@@ -31,19 +31,24 @@ exports.attachImageUrls = properties => {
 exports.saveImage = (propertyId, file) => {
     if (!file) return null
 
-    fs.mkdirSync(uploadDir, { recursive: true })
+    try {
+        fs.mkdirSync(uploadDir, { recursive: true })
 
-    for (const ext of allowedExtensions) {
-        const oldPath = path.join(uploadDir, `property-${propertyId}${ext}`)
-        if (fs.existsSync(oldPath)) {
-            fs.unlinkSync(oldPath)
+        for (const ext of allowedExtensions) {
+            const oldPath = path.join(uploadDir, `property-${propertyId}${ext}`)
+            if (fs.existsSync(oldPath)) {
+                fs.unlinkSync(oldPath)
+            }
         }
+
+        const extension = getExtension(file.mimetype)
+        const fileName = `property-${propertyId}${extension}`
+        const filePath = path.join(uploadDir, fileName)
+        fs.writeFileSync(filePath, file.buffer)
+
+        return `/uploads/properties/${fileName}`
+    } catch (err) {
+        console.warn('Could not save image to disk (filesystem may be read-only in serverless mode):', err.message)
+        return null
     }
-
-    const extension = getExtension(file.mimetype)
-    const fileName = `property-${propertyId}${extension}`
-    const filePath = path.join(uploadDir, fileName)
-    fs.writeFileSync(filePath, file.buffer)
-
-    return `/uploads/properties/${fileName}`
 }

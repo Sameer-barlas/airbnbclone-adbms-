@@ -13,18 +13,82 @@ module.exports = class Property {
         )
     }
 
-    static search({ city, checkIn, checkOut, guests, minPrice, maxPrice }) {
-        return db.query(
-            'CALL sp_search_properties(?, ?, ?, ?, ?, ?)',
-            [
-                city || null,
-                checkIn || null,
-                checkOut || null,
-                guests || 1,
-                minPrice || null,
-                maxPrice || null
-            ]
-        )
+    static async search({ city, checkIn, checkOut, guests, minPrice, maxPrice }) {
+        try {
+            return await db.query(
+                'CALL sp_search_properties(?, ?, ?, ?, ?, ?)',
+                [
+                    city || null,
+                    checkIn || null,
+                    checkOut || null,
+                    guests || 1,
+                    minPrice || null,
+                    maxPrice || null
+                ]
+            )
+        } catch (err) {
+            if (err.code === 'ER_SP_DOES_NOT_EXIST' || err.errno === 1305) {
+                const params = []
+                let sql = `
+                    SELECT
+                        p.property_id,
+                        p.title,
+                        p.property_type,
+                        p.price_per_night,
+                        ${checkIn && checkOut ? 'DATEDIFF(?, ?) * p.price_per_night' : 'p.price_per_night'} AS total_cost,
+                        p.max_guests,
+                        p.avg_rating,
+                        p.total_reviews,
+                        c.city_name,
+                        GROUP_CONCAT(DISTINCT a.name ORDER BY a.name SEPARATOR ', ') AS amenities
+                    FROM properties p
+                    JOIN cities c ON p.city_id = c.city_id
+                    LEFT JOIN property_amenities pa ON p.property_id = pa.property_id
+                    LEFT JOIN amenities a ON pa.amenity_id = a.amenity_id
+                    WHERE p.is_active = 1
+                `
+                if (checkIn && checkOut) {
+                    params.push(checkOut, checkIn)
+                }
+                if (city) {
+                    sql += ' AND c.city_name = ?'
+                    params.push(city)
+                }
+                if (guests) {
+                    sql += ' AND p.max_guests >= ?'
+                    params.push(Number(guests))
+                }
+                if (minPrice) {
+                    sql += ' AND p.price_per_night >= ?'
+                    params.push(Number(minPrice))
+                }
+                if (maxPrice) {
+                    sql += ' AND p.price_per_night <= ?'
+                    params.push(Number(maxPrice))
+                }
+                if (checkIn && checkOut) {
+                    sql += `
+                        AND p.property_id NOT IN (
+                            SELECT DISTINCT property_id
+                            FROM bookings
+                            WHERE status IN ('confirmed', 'pending')
+                              AND check_in < ?
+                              AND check_out > ?
+                        )
+                    `
+                    params.push(checkOut, checkIn)
+                }
+                sql += `
+                    GROUP BY
+                        p.property_id, p.title, p.property_type, p.price_per_night,
+                        p.max_guests, p.avg_rating, p.total_reviews, c.city_name
+                    ORDER BY p.avg_rating DESC, p.price_per_night ASC
+                `
+                const [rows] = await db.query(sql, params)
+                return [[rows]]
+            }
+            throw err
+        }
     }
 
     static findDetail(propertyId) {
@@ -111,8 +175,34 @@ module.exports = class Property {
         return db.execute('SELECT * FROM vw_host_dashboard WHERE host_id = ?', [hostId])
     }
 
-    static fetchHostRevenue(hostId, year) {
-        return db.query('CALL sp_host_revenue_report(?, ?)', [hostId, year])
+    static async fetchHostRevenue(hostId, year) {
+        try {
+            return await db.query('CALL sp_host_revenue_report(?, ?)', [hostId, year])
+        } catch (err) {
+            if (err.code === 'ER_SP_DOES_NOT_EXIST' || err.errno === 1305) {
+                const sql = `
+                    SELECT
+                        MONTHNAME(b.check_in) AS month_name,
+                        MONTH(b.check_in) AS month_num,
+                        COUNT(b.booking_id) AS total_bookings,
+                        SUM(b.total_price) AS gross_revenue,
+                        ROUND(AVG(b.total_price), 2) AS avg_booking_value,
+                        ROUND(AVG(DATEDIFF(b.check_out, b.check_in)), 1) AS avg_nights,
+                        SUM(COUNT(b.booking_id)) OVER (ORDER BY MONTH(b.check_in)) AS running_bookings,
+                        SUM(SUM(b.total_price)) OVER (ORDER BY MONTH(b.check_in)) AS running_revenue
+                    FROM bookings b
+                    JOIN properties p ON b.property_id = p.property_id
+                    WHERE p.host_id = ?
+                      AND b.status IN ('confirmed', 'completed')
+                      AND YEAR(b.check_in) = ?
+                    GROUP BY month_name, month_num
+                    ORDER BY month_num
+                `
+                const [rows] = await db.query(sql, [hostId, year])
+                return [[rows]]
+            }
+            throw err
+        }
     }
 
     static findForHost(propertyId, hostId) {

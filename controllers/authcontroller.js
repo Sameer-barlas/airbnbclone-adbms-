@@ -175,6 +175,29 @@ exports.postsignup = async (req, res) => {
         })
     }
 
+    if (phone && !/^[0-9+\-() ]{7,20}$/.test(phone)) {
+        return res.status(422).render('auth/signup', {
+            pageTitle: 'Signup',
+            currentPage: 'signup',
+            errorMessage: 'Invalid phone number format.',
+            oldInput
+        })
+    }
+
+    if (dateOfBirth) {
+        const dob = new Date(dateOfBirth)
+        const eighteenYearsAgo = new Date()
+        eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18)
+        if (Number.isNaN(dob.getTime()) || dob > eighteenYearsAgo) {
+            return res.status(422).render('auth/signup', {
+                pageTitle: 'Signup',
+                currentPage: 'signup',
+                errorMessage: 'User must be at least 18 years old.',
+                oldInput
+            })
+        }
+    }
+
     try {
         const [existingUsers] = await User.findByEmail(email)
         if (existingUsers.length > 0) {

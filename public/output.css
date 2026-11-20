@@ -93,6 +93,7 @@
     --font-weight-black: 900;
     --tracking-tight: -0.025em;
     --tracking-widest: 0.1em;
+    --radius-xl: 0.75rem;
     --radius-2xl: 1rem;
     --radius-3xl: 1.5rem;
     --blur-xl: 24px;
@@ -870,6 +871,9 @@
   .rounded-full {
     border-radius: calc(infinity * 1px);
   }
+  .rounded-xl {
+    border-radius: var(--radius-xl);
+  }
   .border {
     border-style: var(--tw-border-style);
     border-width: 1px;
@@ -1072,6 +1076,9 @@
   }
   .bg-slate-200 {
     background-color: var(--color-slate-200);
+  }
+  .bg-slate-900 {
+    background-color: var(--color-slate-900);
   }
   .bg-slate-950 {
     background-color: var(--color-slate-950);
@@ -1413,6 +1420,9 @@
   }
   .pt-1 {
     padding-top: calc(var(--spacing) * 1);
+  }
+  .pt-3 {
+    padding-top: calc(var(--spacing) * 3);
   }
   .pt-8 {
     padding-top: calc(var(--spacing) * 8);
@@ -1978,6 +1988,13 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-rose-600);
+      }
+    }
+  }
+  .hover\:bg-slate-50 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-slate-50);
       }
     }
   }

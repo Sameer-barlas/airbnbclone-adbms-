@@ -123,6 +123,9 @@
                                 <textarea name="body" rows="3" required placeholder="Ask about the stay..." class="w-full rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 outline-none transition focus:border-rose-400 focus:ring-4 focus:ring-rose-100"></textarea>
                                 <button class="w-full rounded-2xl border border-slate-200 bg-white py-3 font-bold transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600">Send Message</button>
                             </form>
+                        <% } else if (!isAuthenticated) { %>
+                            <a href="/login" class="mt-6 block rounded-2xl bg-rose-500 py-4 text-center font-black text-white shadow-xl shadow-rose-100 transition hover:-translate-y-1 hover:bg-rose-600">Login to Reserve</a>
+                            <a href="/signup" class="mt-3 block rounded-2xl border border-slate-200 bg-white py-4 text-center font-black text-slate-900 transition hover:-translate-y-0.5 hover:bg-slate-50">Create an Account</a>
                         <% } %>
                     </aside>
                 </div>

@@ -26,6 +26,15 @@ module.exports = class Review {
                 [bookingId, guestId, booking.property_id, rating, comment || null]
             )
 
+            // Recalculate average rating and total reviews (ensures compatibility with TiDB where triggers are absent)
+            await conn.execute(
+                `UPDATE properties
+                 SET avg_rating = (SELECT ROUND(AVG(rating), 2) FROM reviews WHERE property_id = ?),
+                     total_reviews = (SELECT COUNT(*) FROM reviews WHERE property_id = ?)
+                 WHERE property_id = ?`,
+                [booking.property_id, booking.property_id, booking.property_id]
+            )
+
             await conn.commit()
         } catch (err) {
             await conn.rollback()

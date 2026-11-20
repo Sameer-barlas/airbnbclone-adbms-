@@ -213,9 +213,13 @@ exports.confirmbooking = async (req, res) => {
 
         if (Number(result.booking_id) === -1) {
             const [properties] = await Property.findDetail(selectedPropertyId)
+            const currentHome = properties[0] ? {
+                ...properties[0],
+                imageUrl: propertyImage.getImageUrl(properties[0].property_id)
+            } : null
             return res.status(422).render('store/book', {
                 pageTitle: 'Book Home',
-                currentHome: properties[0],
+                currentHome,
                 currentPage: 'book',
                 errorMessage: result.message,
                 oldInput: { checkIn, checkOut, numGuests, paymentMethod }
@@ -226,9 +230,13 @@ exports.confirmbooking = async (req, res) => {
     } catch (err) {
         console.log(err)
         const [properties] = await Property.findDetail(selectedPropertyId)
+        const currentHome = properties[0] ? {
+            ...properties[0],
+            imageUrl: propertyImage.getImageUrl(properties[0].property_id)
+        } : null
         res.status(500).render('store/book', {
             pageTitle: 'Book Home',
-            currentHome: properties[0],
+            currentHome,
             currentPage: 'book',
             errorMessage: err.message,
             oldInput: { checkIn, checkOut, numGuests, paymentMethod }
