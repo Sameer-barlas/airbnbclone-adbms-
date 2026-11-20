@@ -1,7 +1,7 @@
 {
-  "name": "stayease-airbnb-clone",
+  "name": "rentza",
   "version": "1.0.0",
-  "description": "StayEase - MVC Airbnb Clone with Node.js, Express, EJS, Tailwind CSS, and MySQL / TiDB",
+  "description": "Rentza - MVC Rental & Booking Platform with Node.js, Express, EJS, Tailwind CSS, and MySQL / TiDB",
   "license": "ISC",
   "author": "",
   "type": "commonjs",

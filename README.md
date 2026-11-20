@@ -1,6 +1,6 @@
-# StayEase — Full-Stack Airbnb Clone (ADBMS Project)
+# Rentza — Full-Stack Rental & Booking Platform (Find Your Home)
 
-StayEase is an MVC-based Airbnb web application built with **Node.js, Express, EJS, Tailwind CSS, and MySQL / TiDB Cloud**.
+Rentza (`https://rentza.vercel.app`) is an MVC-based rental and booking web application built with **Node.js, Express, EJS, Tailwind CSS, and MySQL / TiDB Cloud**.
 
 ---
 

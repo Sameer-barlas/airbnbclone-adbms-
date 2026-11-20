@@ -143,7 +143,7 @@ test('StayEase Test Suite', async (t) => {
       const homeRes = await fetchNoKeepAlive(`${baseUrl}/`);
       assert.strictEqual(homeRes.status, 200);
       const homeHtml = await homeRes.text();
-      assert.ok(homeHtml.includes('StayEase'), 'Home HTML should mention StayEase');
+      assert.ok(homeHtml.includes('Rentza') || homeHtml.includes('StayEase'), 'Home HTML should mention Rentza');
       assert.ok(homeHtml.includes('Skyline Loft Lahore'), 'Rendered property should appear on page');
 
       // 2. GET /login

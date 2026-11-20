@@ -7,7 +7,9 @@
       "use": "@vercel/node",
       "config": {
         "includeFiles": [
-          "views/**"
+          "views/**",
+          "public/uploads/**",
+          "public/images/**"
         ]
       }
     },
@@ -18,12 +20,24 @@
   ],
   "routes": [
     {
+      "src": "/images/(.*)",
+      "dest": "/public/images/$1"
+    },
+    {
       "src": "/uploads/(.*)",
       "dest": "/public/uploads/$1"
     },
     {
       "src": "/output.css",
       "dest": "/public/output.css"
+    },
+    {
+      "src": "/favicon.svg",
+      "dest": "/public/favicon.svg"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/public/favicon.svg"
     },
     {
       "src": "/(.*)",

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: stayease-airbnb-clone
+    name: rentza
     env: node
     plan: free
     buildCommand: npm install && npm run build:css

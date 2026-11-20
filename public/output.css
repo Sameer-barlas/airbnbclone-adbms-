@@ -535,8 +535,11 @@
   .h-2 {
     height: calc(var(--spacing) * 2);
   }
-  .h-9 {
-    height: calc(var(--spacing) * 9);
+  .h-8 {
+    height: calc(var(--spacing) * 8);
+  }
+  .h-10 {
+    height: calc(var(--spacing) * 10);
   }
   .h-11 {
     height: calc(var(--spacing) * 11);
@@ -613,9 +616,6 @@
   .w-8 {
     width: calc(var(--spacing) * 8);
   }
-  .w-9 {
-    width: calc(var(--spacing) * 9);
-  }
   .w-11 {
     width: calc(var(--spacing) * 11);
   }
@@ -651,6 +651,9 @@
   }
   .w-\[86\%\] {
     width: 86%;
+  }
+  .w-auto {
+    width: auto;
   }
   .w-full {
     width: 100%;
@@ -696,6 +699,9 @@
   }
   .flex-grow {
     flex-grow: 1;
+  }
+  .transform {
+    transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
   }
   .cursor-not-allowed {
     cursor: not-allowed;
@@ -1816,6 +1822,11 @@
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
+  .transition-transform {
+    transition-property: transform, translate, scale, rotate;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
   .duration-300 {
     --tw-duration: 300ms;
     transition-duration: 300ms;
@@ -2201,11 +2212,6 @@
   .sm\:col-span-2 {
     @media (width >= 40rem) {
       grid-column: span 2 / span 2;
-    }
-  }
-  .sm\:block {
-    @media (width >= 40rem) {
-      display: block;
     }
   }
   .sm\:grid-cols-1 {
@@ -2644,6 +2650,26 @@
     display: none;
   }
 }
+@property --tw-rotate-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-z {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-y {
+  syntax: "*";
+  inherits: false;
+}
 @property --tw-scroll-snap-strictness {
   syntax: "*";
   inherits: false;
@@ -2904,6 +2930,11 @@
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
+      --tw-rotate-x: initial;
+      --tw-rotate-y: initial;
+      --tw-rotate-z: initial;
+      --tw-skew-x: initial;
+      --tw-skew-y: initial;
       --tw-scroll-snap-strictness: proximity;
       --tw-space-y-reverse: 0;
       --tw-border-style: solid;

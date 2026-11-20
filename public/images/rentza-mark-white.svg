@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 132" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="markGrad_dark_mark" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fb7185" />
+      <stop offset="100%" stop-color="#e11d48" />
+    </linearGradient>
+  </defs>
+  <g transform="translate(6, 6)">
+    <!-- Chimney -->
+    <path d="M72 16 H84 V36 H72 Z" fill="#ffffff" />
+
+    <!-- Main House Outer Shell forming 'R' -->
+    <path d="M56 12
+             L16 46
+             V82
+             C16 82 22 78 28 78
+             V52
+             L56 28
+             L84 52
+             C92 59 96 66 96 76
+             C96 85 88 92 78 93
+             H68
+             L98 120
+             H116
+             L86 91
+             C99 87 110 78 110 65
+             C110 49 97 34 84 27
+             L56 12 Z" fill="#ffffff" />
+
+    <!-- 4 Window Panes -->
+    <rect x="42" y="46" width="11" height="11" rx="2" fill="#ffffff" />
+    <rect x="58" y="46" width="11" height="11" rx="2" fill="#ffffff" />
+    <rect x="42" y="62" width="11" height="11" rx="2" fill="#ffffff" />
+    <rect x="58" y="62" width="11" height="11" rx="2" fill="#ffffff" />
+
+    <!-- Waves -->
+    <path d="M16 84
+             C28 80 44 71 58 71
+             C68 71 74 77 72 87
+             C69 98 52 108 32 106
+             C22 104 18 97 16 84 Z" fill="url(#markGrad_dark_mark)" />
+    <path d="M16 84
+             C30 79 46 72 58 75
+             C48 85 34 96 16 97
+             Z" fill="#fda4af" opacity="0.85" />
+  </g>
+</svg>

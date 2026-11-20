@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken')
 const User = require('../model/users')
 
 const JWT_SECRET = process.env.JWT_SECRET || 'stayease-dev-secret-change-me'
-const COOKIE_NAME = 'stayease_token'
+const COOKIE_NAME = 'rentza_token'
+const LEGACY_COOKIE_NAME = 'stayease_token'
 const allowedSignupRoles = ['guest', 'host']
 
 const getRedirectPath = role => {
@@ -33,7 +34,7 @@ const setAuthCookie = (res, token) => {
 }
 
 exports.verifyToken = async (req, res, next) => {
-    const token = req.cookies?.[COOKIE_NAME]
+    const token = req.cookies?.[COOKIE_NAME] || req.cookies?.[LEGACY_COOKIE_NAME]
     req.user = null
 
     if (token) {
@@ -52,9 +53,11 @@ exports.verifyToken = async (req, res, next) => {
                 }
             } else {
                 res.clearCookie(COOKIE_NAME)
+                res.clearCookie(LEGACY_COOKIE_NAME)
             }
         } catch (err) {
             res.clearCookie(COOKIE_NAME)
+            res.clearCookie(LEGACY_COOKIE_NAME)
         }
     }
 
@@ -242,5 +245,6 @@ exports.postsignup = async (req, res) => {
 
 exports.postlogout = (req, res) => {
     res.clearCookie(COOKIE_NAME)
+    res.clearCookie(LEGACY_COOKIE_NAME)
     res.redirect('/')
 }

@@ -4,6 +4,7 @@ const rootDir = require('./path')
 
 const uploadDir = path.join(rootDir, 'public', 'uploads', 'properties')
 const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp']
+const defaultSeedCount = 12
 
 const getExtension = mimetype => {
     if (mimetype === 'image/png') return '.png'
@@ -12,16 +13,26 @@ const getExtension = mimetype => {
 }
 
 exports.getImageUrl = propertyId => {
+    const id = Number(propertyId)
+
+    // Check if the file exists on the local filesystem
     for (const ext of allowedExtensions) {
         const filePath = path.join(uploadDir, `property-${propertyId}${ext}`)
         if (fs.existsSync(filePath)) {
             return `/uploads/properties/property-${propertyId}${ext}`
         }
     }
+
+    // Serverless / static CDN fallback for seeded demo properties (1-12)
+    if (!isNaN(id) && id >= 1 && id <= defaultSeedCount) {
+        return `/uploads/properties/property-${id}.jpg`
+    }
+
     return null
 }
 
 exports.attachImageUrls = properties => {
+    if (!Array.isArray(properties)) return []
     return properties.map(property => ({
         ...property,
         imageUrl: exports.getImageUrl(property.property_id)
